@@ -1,7 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { Icon } from "astro-icon/components";
-import { getDivision, getDivisionIds, getAdjacentDivisions, getDivisions } from "@/lib/divisions";
+import {
+  getDivision,
+  getDivisionIds,
+  getAdjacentDivisions,
+  getDivisions,
+} from "@/lib/divisions";
 import { getProfile } from "@/lib/profiles";
 import { getColorTokens } from "@/constants/profile-colors";
 import ProcessSection from "../../components/process/ProcessSection";
@@ -10,6 +15,10 @@ import ConceptAccordion from "../../components/interactive/ConceptAccordion";
 import ProfileGroupGrid from "../../components/interactive/ProfileGroupGrid";
 import ConformanceChecklist from "../../components/interactive/ConformanceChecklist";
 import ProcessSpecTabs from "../../components/interactive/ProcessSpecTabs";
+import ReadingSidebar from "../../components/interactive/ReadingSidebar";
+import PdfViewerModal from "../../components/interactive/PdfViewerModal";
+import PdfOpenButton from "../../components/pdf/PdfOpenButton.astro";
+import { getPdfDocument } from "@/lib/pdf-documents";
 
 export function getStaticPaths() {
   return getDivisionIds().map((id) => ({ params: { id } }));
@@ -24,33 +33,119 @@ const { prev, next } = getAdjacentDivisions(id!);
 const allDivisions = getDivisions();
 const currentIndex = allDivisions.findIndex((d) => d.id === id);
 const profile = division.profileId ? getProfile(division.profileId) : null;
+const pdfDocument = getPdfDocument(id!);
 
-let sectionNum = 0;
-function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"); }
+interface ReadingSection {
+  id: string;
+  title: string;
+  number: string;
+}
+
+const readingSections: ReadingSection[] = [];
+
+function registerSection(id: string, title: string): ReadingSection {
+  const section = {
+    id,
+    title,
+    number: String(readingSections.length + 1).padStart(2, "0"),
+  };
+
+  readingSections.push(section);
+  return section;
+}
+
+const descriptionSection = registerSection("descripcion", "Descripción");
+const audienceSection = registerSection("publico-objetivo", "Público Objetivo");
+const topicsSection = registerSection("temas-clave", "Temas Clave");
+const scopeSection = division.scope
+  ? registerSection("alcance-documento", "Alcance del Documento")
+  : null;
+const structureSection = division.documentStructure
+  ? registerSection("estructura-documento", "Estructura del Documento")
+  : null;
+const conceptsSection = division.concepts
+  ? registerSection("conceptos-clave", "Conceptos y Definiciones Clave")
+  : null;
+const groupsSection = division.profileGroups
+  ? registerSection("taxonomia-perfiles", "Taxonomía de Grupos de Perfiles")
+  : null;
+const conformanceSection = division.conformanceNotes
+  ? registerSection("reglas-conformidad", "Reglas de Conformidad")
+  : null;
+const processSpecsSection = division.processSpecs
+  ? registerSection(
+      "especificaciones-procesos",
+      "Especificaciones de los Procesos",
+    )
+  : null;
+const rolesSection = profile
+  ? registerSection("roles-perfil", "Roles del Perfil")
+  : null;
+const processesSection = profile
+  ? registerSection("procesos-perfil", "Procesos del Perfil")
+  : null;
+const packagesSection = profile
+  ? registerSection("paquetes-despliegue", "Paquetes de Despliegue")
+  : null;
+
+interface PdfTarget {
+  page?: number;
+  search?: string;
+}
+
+function cleanDocumentStructureTitle(entry: string) {
+  return entry
+    .replace(/^Sección\s+\d+\s+—\s+/, "")
+    .replace(/^Anexo\s+[A-Z]\s+—\s+/, "")
+    .trim();
+}
 ---
 
-<Layout title={`Parte ${division.partNumber} — ${division.name} — ISO/IEC 29110`}>
+<Layout
+  title={`Parte ${division.partNumber} — ${division.name} — ISO/IEC 29110`}
+>
   <main>
-
     <!-- Progress bar -->
-    <div class="bg-[#f5f1ec] border-b border-[#ebe7e1] sticky top-14 z-40" data-motion="reveal">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
+    <div
+      class="bg-[#f5f1ec] border-b border-[#ebe7e1] sticky top-14 z-40"
+      data-motion="reveal"
+    >
+      <div
+        class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4"
+      >
         <div class="flex items-center gap-3 min-w-0">
-          <a href="/perfiles" class="text-sm text-[#7b7b78] hover:text-[#111111] transition-colors whitespace-nowrap flex items-center gap-1.5">
+          <a
+            href="/perfiles"
+            class="text-sm text-[#7b7b78] hover:text-[#111111] transition-colors whitespace-nowrap flex items-center gap-1.5"
+          >
             <Icon name="lucide:arrow-left" class="w-4 h-4" />
             Todos los perfiles
           </a>
           <span class="text-[#d3cec6]">|</span>
-          <span class="text-sm font-medium text-[#626260] truncate">{division.name}</span>
+          <span class="text-sm font-medium text-[#626260] truncate"
+            >{division.name}</span
+          >
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
-          <span class="text-sm text-[#7b7b78]">{currentIndex + 1} / {allDivisions.length}</span>
+          <PdfOpenButton
+            label={`Documento fuente — ${division.name}`}
+            pdfUrl={pdfDocument?.url}
+            pdfTitle={pdfDocument?.title}
+            page={1}
+            search={division.name}
+            icon="lucide:file-text"
+            class="hidden sm:inline-flex bg-white"
+          />
+          <span class="text-sm text-[#7b7b78]"
+            >{currentIndex + 1} / {allDivisions.length}</span
+          >
           <div class="w-28 h-1.5 bg-[#ebe7e1] rounded-full overflow-hidden">
             <div
               class={`h-full rounded-full ${tokens.bg}`}
               style={`width: ${((currentIndex + 1) / allDivisions.length) * 100}%`}
               data-motion="progress"
-            />
+            >
+            </div>
           </div>
         </div>
       </div>
@@ -58,26 +153,48 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
     <!-- Hero -->
     <div class="bg-[#f5f1ec] border-b border-[#ebe7e1]">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10" data-motion="hero">
+      <div
+        class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10"
+        data-motion="hero"
+      >
         <div class="flex items-start gap-5">
-          <div class={`w-16 h-16 rounded-2xl ${tokens.bg} flex items-center justify-center flex-shrink-0`} data-motion-child>
+          <div
+            class={`w-16 h-16 rounded-2xl ${tokens.bg} flex items-center justify-center flex-shrink-0`}
+            data-motion-child
+          >
             <Icon name={`lucide:${division.icon}`} class="w-8 h-8 text-white" />
           </div>
           <div data-motion-child>
             <div class="flex items-center gap-2 mb-2 flex-wrap">
-              <span class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full">
+              <span
+                class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full"
+              >
                 Módulo {currentIndex + 1} de {allDivisions.length}
               </span>
-              <span class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full">
+              <span
+                class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full"
+              >
                 Parte {division.partNumber}
               </span>
-              <span class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full">
-                {division.documentType === "IS" ? "Norma Internacional" : "Informe Técnico"} · {division.year}
+              <span
+                class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full"
+              >
+                {
+                  division.documentType === "IS"
+                    ? "Norma Internacional"
+                    : "Informe Técnico"
+                } · {division.year}
               </span>
             </div>
-            <h1 class="text-2xl sm:text-3xl font-semibold text-[#111111] leading-snug tracking-tight">{division.name}</h1>
+            <h1
+              class="text-2xl sm:text-3xl font-semibold text-[#111111] leading-snug tracking-tight"
+            >
+              {division.name}
+            </h1>
             <p class="text-[#7b7b78] mt-1 text-xs font-mono">
-              ISO/IEC {division.documentType === "TR" ? "TR " : ""}29110-{division.partNumber}:{division.year}
+              ISO/IEC {division.documentType === "TR" ? "TR " : ""}29110-{
+                division.partNumber
+              }:{division.year}
             </p>
           </div>
         </div>
@@ -85,221 +202,475 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
     </div>
 
     <!-- Content -->
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div
+      class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:grid lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-10"
+    >
+      <aside class="lg:pr-2" data-motion="reveal">
+        <ReadingSidebar
+          sections={readingSections}
+          accentClass={tokens.bg}
+          accentBadgeClass={tokens.badge}
+          moduleLabel={division.name}
+          client:load
+        />
+      </aside>
 
-      <!-- 01 Descripción -->
-      <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-        <div class="flex items-center gap-3 mb-4">
-          <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-          <h2 class="text-lg font-semibold text-[#111111]">Descripción</h2>
-        </div>
-        <p class="text-[#626260] leading-relaxed">{division.description}</p>
-      </section>
-
-      <!-- 02 Público Objetivo -->
-      <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-        <div class="flex items-center gap-3 mb-4">
-          <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-          <h2 class="text-lg font-semibold text-[#111111]">Público Objetivo</h2>
-        </div>
-        <div class="flex items-start gap-3">
-          <Icon name="lucide:users" class="w-6 h-6 text-[#626260] flex-shrink-0 mt-0.5" />
-          <div>
-            <p class="text-[#626260] leading-relaxed">{division.targetAudience}</p>
-            <span class={`inline-block mt-3 px-3 py-1.5 rounded-lg text-xs font-medium ${tokens.badge}`}>
-              {division.documentType === "IS"
-                ? "Norma Internacional — sus requisitos son obligatorios para la conformidad"
-                : "Informe Técnico — guía informativa y de referencia"}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <!-- 03 Temas Clave -->
-      <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-        <div class="flex items-center gap-3 mb-4">
-          <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-          <h2 class="text-lg font-semibold text-[#111111]">Temas Clave</h2>
-        </div>
-        <div class="grid sm:grid-cols-2 gap-3" data-motion="stagger">
-          {division.keyTopics.map((topic) => (
-            <div class="flex items-start gap-3" data-motion-item>
-              <span class={`mt-0.5 w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}>
-                <Icon name="lucide:check" class="w-3 h-3" />
-              </span>
-              <span class="text-sm text-[#626260]">{topic}</span>
+      <div class="space-y-8 min-w-0">
+        <!-- 01 Descripción -->
+        <section
+          id={descriptionSection.id}
+          class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+          data-motion="reveal"
+        >
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span
+                class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                >{descriptionSection.number}</span
+              >
+              <h2 class="text-lg font-semibold text-[#111111]">Descripción</h2>
             </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- 04 Alcance (si existe) -->
-      {division.scope && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Alcance del Documento</h2>
           </div>
-          <p class="text-[#626260] leading-relaxed">{division.scope}</p>
+          <p class="text-[#626260] leading-relaxed">{division.description}</p>
         </section>
-      )}
 
-      <!-- 05 Estructura del documento (si existe) -->
-      {division.documentStructure && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Estructura del Documento</h2>
-          </div>
-          <ol class="space-y-2">
-            {division.documentStructure.map((section, i) => (
-              <li class="flex items-start gap-3">
-                <span class={`mt-0.5 w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}>
-                  {i + 1}
-                </span>
-                <span class="text-sm text-[#626260] pt-0.5">{section}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )}
-
-      <!-- 06 Conceptos clave (si existen) — acordeón interactivo -->
-      {division.concepts && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Conceptos y Definiciones Clave</h2>
-          </div>
-          <ConceptAccordion concepts={division.concepts} color={division.color} client:visible />
-        </section>
-      )}
-
-      <!-- 07 Grupos de perfiles (solo parte 1) — grid interactivo -->
-      {division.profileGroups && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Taxonomía de Grupos de Perfiles</h2>
-          </div>
-          <ProfileGroupGrid groups={division.profileGroups} color={division.color} client:visible />
-        </section>
-      )}
-
-      <!-- 08 Notas de conformidad — checklist interactivo -->
-      {division.conformanceNotes && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Reglas de Conformidad</h2>
-          </div>
-          <ConformanceChecklist notes={division.conformanceNotes} color={division.color} client:visible />
-        </section>
-      )}
-
-      <!-- 09 Especificaciones de proceso — tabs + acordeón interactivo -->
-      {division.processSpecs && (
-        <section data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Especificaciones de los Procesos</h2>
-          </div>
-          <ProcessSpecTabs specs={division.processSpecs} color={division.color} client:visible />
-        </section>
-      )}
-
-      <!-- Roles (solo si tiene perfil) -->
-      {profile && (
-        <section data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Roles del Perfil</h2>
-          </div>
-          <div class="grid gap-4 sm:grid-cols-2" data-motion="stagger">
-            {profile.roles.map((role) => <RoleCard role={role} tokens={tokens} />)}
-          </div>
-        </section>
-      )}
-
-      <!-- 05 Procesos (solo si tiene perfil) -->
-      {profile && (
-        <section data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Procesos del Perfil</h2>
-          </div>
-          <div class="space-y-4">
-            {profile.processes.map((process) => (
-              <ProcessSection process={process} color={profile.color} client:visible />
-            ))}
-          </div>
-        </section>
-      )}
-
-      <!-- 06 Paquetes de despliegue (solo si tiene perfil) -->
-      {profile && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
-          <div class="flex items-center gap-3 mb-4">
-            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
-            <h2 class="text-lg font-semibold text-[#111111]">Paquetes de Despliegue</h2>
-          </div>
-          <p class="text-sm text-[#626260] mb-4">
-            Guías detalladas que apoyan la implementación del perfil en la organización.
-          </p>
-          <div class="flex flex-wrap gap-2">
-            {profile.deploymentPackages.map((pkg) => (
-              <span class={`px-3 py-1.5 rounded-lg text-sm font-medium border ${tokens.badge} border-[#d3cec6]`}>
-                <Icon name="lucide:package" class="w-4 h-4 inline-block mr-1.5" />
-                {pkg}
-              </span>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <!-- Navegación -->
-      <div class="flex justify-between items-center pt-6 border-t border-[#ebe7e1] gap-4" data-motion="reveal">
-        {prev ? (
-          <a href={`/perfiles/${prev.id}`} class="flex items-center gap-3 group min-w-0" data-hover="lift">
-            <div class="w-10 h-10 rounded-xl bg-[#ebe7e1] group-hover:bg-[#d3cec6] flex items-center justify-center transition-colors flex-shrink-0">
-              <Icon name="lucide:arrow-left" class="w-5 h-5 text-[#626260]" />
+        <!-- 02 Público Objetivo -->
+        <section
+          id={audienceSection.id}
+          class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+          data-motion="reveal"
+        >
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span
+                class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                >{audienceSection.number}</span
+              >
+              <h2 class="text-lg font-semibold text-[#111111]">
+                Público Objetivo
+              </h2>
             </div>
-            <div class="min-w-0">
-              <p class="text-sm text-[#7b7b78]">Anterior</p>
-              <p class="text-sm font-medium text-[#111111] group-hover:text-[#626260] transition-colors truncate">
-                Parte {prev.partNumber} — {prev.name}
-              </p>
-            </div>
-          </a>
-        ) : <div />}
-
-        {next ? (
-          <a href={`/perfiles/${next.id}`} class="flex items-center gap-3 group text-right min-w-0" data-hover="lift">
-            <div class="min-w-0">
-              <p class="text-sm text-[#7b7b78]">Siguiente</p>
-              <p class="text-sm font-medium text-[#111111] group-hover:text-[#626260] transition-colors truncate">
-                Parte {next.partNumber} — {next.name}
-              </p>
-            </div>
-            <div class={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors flex-shrink-0 ${tokens.btn}`}>
-              <Icon name="lucide:arrow-right" class="w-5 h-5 text-white" />
-            </div>
-          </a>
-        ) : (
-          <div class="flex items-center gap-3 group text-right">
+          </div>
+          <div class="flex items-start gap-3">
+            <Icon
+              name="lucide:users"
+              class="w-6 h-6 text-[#626260] flex-shrink-0 mt-0.5"
+            />
             <div>
-              <p class="text-sm text-[#7b7b78]">Has llegado al final</p>
-              <a href="/perfiles" class="text-sm font-medium text-[#111111] hover:underline">
-                Ver todos los perfiles
-              </a>
-            </div>
-            <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-              <Icon name="lucide:check" class="w-5 h-5 text-green-600" />
+              <p class="text-[#626260] leading-relaxed">
+                {division.targetAudience}
+              </p>
+              <span
+                class={`inline-block mt-3 px-3 py-1.5 rounded-lg text-xs font-medium ${tokens.badge}`}
+              >
+                {
+                  division.documentType === "IS"
+                    ? "Norma Internacional — sus requisitos son obligatorios para la conformidad"
+                    : "Informe Técnico — guía informativa y de referencia"
+                }
+              </span>
             </div>
           </div>
-        )}
-      </div>
+        </section>
 
+        <!-- 03 Temas Clave -->
+        <section
+          id={topicsSection.id}
+          class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+          data-motion="reveal"
+        >
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span
+                class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                >{topicsSection.number}</span
+              >
+              <h2 class="text-lg font-semibold text-[#111111]">Temas Clave</h2>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-2 gap-3" data-motion="stagger">
+            {
+              division.keyTopics.map((topic) => (
+                <div class="flex items-start gap-3" data-motion-item>
+                  <span
+                    class={`mt-0.5 w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}
+                  >
+                    <Icon name="lucide:check" class="w-3 h-3" />
+                  </span>
+                  <span class="text-sm text-[#626260]">{topic}</span>
+                </div>
+              ))
+            }
+          </div>
+        </section>
+
+        <!-- 04 Alcance (si existe) -->
+        {
+          division.scope && (
+            <section
+              id={scopeSection?.id}
+              class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {scopeSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Alcance del Documento
+                  </h2>
+                </div>
+              </div>
+              <p class="text-[#626260] leading-relaxed">{division.scope}</p>
+            </section>
+          )
+        }
+
+        <!-- 05 Estructura del documento (si existe) -->
+        {
+          division.documentStructure && (
+            <section
+              id={structureSection?.id}
+              class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {structureSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Estructura del Documento
+                  </h2>
+                </div>
+              </div>
+              <ol class="space-y-2">
+                {division.documentStructure.map((section, i) => (
+                  <li>
+                    <button
+                      type="button"
+                      data-pdf-open="true"
+                      data-pdf-url={pdfDocument?.url}
+                      data-pdf-title={pdfDocument?.title}
+                      data-pdf-label={section}
+                      data-pdf-search={cleanDocumentStructureTitle(section)}
+                      class="flex w-full items-start gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-[#f8f5f0]"
+                    >
+                      <span
+                        class={`mt-0.5 w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}
+                      >
+                        {i + 1}
+                      </span>
+                      <span class="flex-1 text-sm text-[#626260] pt-0.5">
+                        {section}
+                      </span>
+                      <Icon
+                        name="lucide:external-link"
+                        class="mt-1 h-4 w-4 flex-shrink-0 text-[#9c9fa5]"
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            </section>
+          )
+        }
+
+        <!-- 06 Conceptos clave (si existen) — acordeón interactivo -->
+        {
+          division.concepts && (
+            <section
+              id={conceptsSection?.id}
+              class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {conceptsSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Conceptos y Definiciones Clave
+                  </h2>
+                </div>
+              </div>
+              <ConceptAccordion
+                concepts={division.concepts}
+                color={division.color}
+                client:visible
+              />
+            </section>
+          )
+        }
+
+        <!-- 07 Grupos de perfiles (solo parte 1) — grid interactivo -->
+        {
+          division.profileGroups && (
+            <section
+              id={groupsSection?.id}
+              class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {groupsSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Taxonomía de Grupos de Perfiles
+                  </h2>
+                </div>
+              </div>
+              <ProfileGroupGrid
+                groups={division.profileGroups}
+                color={division.color}
+                client:visible
+              />
+            </section>
+          )
+        }
+
+        <!-- 08 Notas de conformidad — checklist interactivo -->
+        {
+          division.conformanceNotes && (
+            <section
+              id={conformanceSection?.id}
+              class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {conformanceSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Reglas de Conformidad
+                  </h2>
+                </div>
+              </div>
+              <ConformanceChecklist
+                notes={division.conformanceNotes}
+                color={division.color}
+                client:visible
+              />
+            </section>
+          )
+        }
+
+        <!-- 09 Especificaciones de proceso — tabs + acordeón interactivo -->
+        {
+          division.processSpecs && (
+            <section
+              id={processSpecsSection?.id}
+              class="scroll-mt-32"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {processSpecsSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Especificaciones de los Procesos
+                  </h2>
+                </div>
+              </div>
+              <ProcessSpecTabs
+                specs={division.processSpecs}
+                color={division.color}
+                client:visible
+              />
+            </section>
+          )
+        }
+
+        <!-- Roles (solo si tiene perfil) -->
+        {
+          profile && (
+            <section
+              id={rolesSection?.id}
+              class="scroll-mt-32"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {rolesSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Roles del Perfil
+                  </h2>
+                </div>
+              </div>
+              <div class="grid gap-4 sm:grid-cols-2" data-motion="stagger">
+                {profile.roles.map((role) => (
+                  <RoleCard role={role} tokens={tokens} />
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        <!-- 05 Procesos (solo si tiene perfil) -->
+        {
+          profile && (
+            <section
+              id={processesSection?.id}
+              class="scroll-mt-32"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {processesSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Procesos del Perfil
+                  </h2>
+                </div>
+              </div>
+              <div class="space-y-4">
+                {profile.processes.map((process) => (
+                  <ProcessSection
+                    process={process}
+                    color={profile.color}
+                    pdfUrl={pdfDocument?.url}
+                    pdfTitle={pdfDocument?.title}
+                    client:visible
+                  />
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        <!-- 06 Paquetes de despliegue (solo si tiene perfil) -->
+        {
+          profile && (
+            <section
+              id={packagesSection?.id}
+              class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
+              data-motion="reveal"
+            >
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {packagesSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Paquetes de Despliegue
+                  </h2>
+                </div>
+              </div>
+              <p class="text-sm text-[#626260] mb-4">
+                Guías detalladas que apoyan la implementación del perfil en la
+                organización.
+              </p>
+              <div class="flex flex-wrap gap-2">
+                {profile.deploymentPackages.map((pkg) => (
+                  <span
+                    class={`px-3 py-1.5 rounded-lg text-sm font-medium border ${tokens.badge} border-[#d3cec6]`}
+                  >
+                    <Icon
+                      name="lucide:package"
+                      class="w-4 h-4 inline-block mr-1.5"
+                    />
+                    {pkg}
+                  </span>
+                ))}
+              </div>
+            </section>
+          )
+        }
+
+        <!-- Navegación -->
+        <div
+          class="flex justify-between items-center pt-6 border-t border-[#ebe7e1] gap-4"
+          data-motion="reveal"
+        >
+          {
+            prev ? (
+              <a
+                href={`/perfiles/${prev.id}`}
+                class="flex items-center gap-3 group min-w-0"
+                data-hover="lift"
+              >
+                <div class="w-10 h-10 rounded-xl bg-[#ebe7e1] group-hover:bg-[#d3cec6] flex items-center justify-center transition-colors flex-shrink-0">
+                  <Icon
+                    name="lucide:arrow-left"
+                    class="w-5 h-5 text-[#626260]"
+                  />
+                </div>
+                <div class="min-w-0">
+                  <p class="text-sm text-[#7b7b78]">Anterior</p>
+                  <p class="text-sm font-medium text-[#111111] group-hover:text-[#626260] transition-colors truncate">
+                    Parte {prev.partNumber} — {prev.name}
+                  </p>
+                </div>
+              </a>
+            ) : (
+              <div />
+            )
+          }
+
+          {
+            next ? (
+              <a
+                href={`/perfiles/${next.id}`}
+                class="flex items-center gap-3 group text-right min-w-0"
+                data-hover="lift"
+              >
+                <div class="min-w-0">
+                  <p class="text-sm text-[#7b7b78]">Siguiente</p>
+                  <p class="text-sm font-medium text-[#111111] group-hover:text-[#626260] transition-colors truncate">
+                    Parte {next.partNumber} — {next.name}
+                  </p>
+                </div>
+                <div
+                  class={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors flex-shrink-0 ${tokens.btn}`}
+                >
+                  <Icon name="lucide:arrow-right" class="w-5 h-5 text-white" />
+                </div>
+              </a>
+            ) : (
+              <div class="flex items-center gap-3 group text-right">
+                <div>
+                  <p class="text-sm text-[#7b7b78]">Has llegado al final</p>
+                  <a
+                    href="/perfiles"
+                    class="text-sm font-medium text-[#111111] hover:underline"
+                  >
+                    Ver todos los perfiles
+                  </a>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
+                  <Icon name="lucide:check" class="w-5 h-5 text-green-600" />
+                </div>
+              </div>
+            )
+          }
+        </div>
+      </div>
     </div>
+    <PdfViewerModal client:load />
   </main>
 </Layout>

@@ -1,0 +1,41 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  label: string;
+  pdfUrl?: string | null;
+  pdfTitle?: string | null;
+  page?: number;
+  search?: string;
+  class?: string;
+  icon?: string;
+}
+
+const {
+  label,
+  pdfUrl,
+  pdfTitle,
+  page,
+  search,
+  class: className = "",
+  icon = "lucide:file-search",
+} = Astro.props;
+
+if (!pdfUrl || !pdfTitle) {
+  return null;
+}
+---
+
+<button
+  type="button"
+  data-pdf-open="true"
+  data-pdf-url={pdfUrl}
+  data-pdf-title={pdfTitle}
+  data-pdf-label={label}
+  data-pdf-page={page ? String(page) : undefined}
+  data-pdf-search={search}
+  class={`inline-flex items-center gap-2 rounded-xl border border-[#d3cec6] px-3 py-2 text-sm font-medium text-[#111111] transition-colors hover:bg-[#f8f5f0] ${className}`}
+>
+  <Icon name={icon} class="w-4 h-4" />
+  Ver en PDF
+</button>

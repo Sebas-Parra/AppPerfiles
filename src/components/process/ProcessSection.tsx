@@ -10,6 +10,8 @@ import ProcessRoles from "./ProcessRoles";
 interface ProcessSectionProps {
   process: Process;
   color: ProfileColor;
+  pdfUrl?: string;
+  pdfTitle?: string;
 }
 
 type Tab = "actividades" | "resultados" | "productos" | "roles";
@@ -21,7 +23,7 @@ const TABS: { key: Tab; label: string; countKey: keyof Process }[] = [
   { key: "roles", label: "Roles Involucrados", countKey: "roles" },
 ];
 
-export default function ProcessSection({ process, color }: ProcessSectionProps) {
+export default function ProcessSection({ process, color, pdfUrl, pdfTitle }: ProcessSectionProps) {
   const [activeTab, setActiveTab] = useState<Tab>("actividades");
   const tokens = getColorTokens(color);
 
@@ -29,11 +31,27 @@ export default function ProcessSection({ process, color }: ProcessSectionProps) 
     <div className="bg-white rounded-xl border border-[#d3cec6]">
       {/* Header */}
       <div className={`${tokens.bg} text-white p-5 rounded-t-xl`}>
-        <div className="flex items-center gap-3">
-          <span className="bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-lg">
-            {process.abbreviation}
-          </span>
-          <h3 className="text-lg font-bold">{process.name}</h3>
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-lg">
+              {process.abbreviation}
+            </span>
+            <h3 className="text-lg font-bold">{process.name}</h3>
+          </div>
+
+          {pdfUrl && pdfTitle && (
+            <button
+              type="button"
+              data-pdf-open="true"
+              data-pdf-url={pdfUrl}
+              data-pdf-title={pdfTitle}
+              data-pdf-search={`${process.abbreviation} ${process.name}`}
+              data-pdf-label={process.name}
+              className="rounded-xl border border-white/25 bg-white/12 px-3 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/20"
+            >
+              Ver en PDF
+            </button>
+          )}
         </div>
         <p className="text-white/90 text-sm mt-2 leading-relaxed">{process.purpose}</p>
       </div>
