@@ -13,6 +13,28 @@ export interface ColorTokens {
 }
 
 export const profileColorTokens: Record<ProfileColor, ColorTokens> = {
+  slate: {
+    bg: "bg-slate-600",
+    bgLight: "bg-slate-50",
+    text: "text-slate-700",
+    border: "border-slate-200",
+    borderHover: "hover:border-slate-400",
+    badge: "bg-slate-100 text-slate-700",
+    tab: "border-slate-500 text-slate-700 bg-slate-50",
+    taskBg: "bg-slate-50 border-slate-200",
+    btn: "bg-slate-600 hover:bg-slate-700",
+  },
+  teal: {
+    bg: "bg-teal-600",
+    bgLight: "bg-teal-50",
+    text: "text-teal-700",
+    border: "border-teal-200",
+    borderHover: "hover:border-teal-400",
+    badge: "bg-teal-100 text-teal-700",
+    tab: "border-teal-500 text-teal-700 bg-teal-50",
+    taskBg: "bg-teal-50 border-teal-200",
+    btn: "bg-teal-600 hover:bg-teal-700",
+  },
   green: {
     bg: "bg-green-600",
     bgLight: "bg-green-50",

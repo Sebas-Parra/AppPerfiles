@@ -1,0 +1,58 @@
+---
+import type { Division } from "@/types/iso29110";
+import { getColorTokens } from "@/constants/profile-colors";
+
+interface Props {
+  division: Division;
+}
+
+const { division } = Astro.props;
+const tokens = getColorTokens(division.color);
+---
+
+<a href={`/divisiones/${division.id}`}>
+  <div
+    class={`bg-white rounded-2xl border-2 ${tokens.border} ${tokens.borderHover} p-6 flex flex-col gap-4 transition-all duration-200 hover:shadow-xl hover:-translate-y-1 cursor-pointer h-full`}
+  >
+    <div class="flex items-start justify-between">
+      <div
+        class={`w-14 h-14 rounded-xl bg-gradient-to-br ${division.gradient} flex items-center justify-center text-2xl shadow-md`}
+      >
+        {division.icon}
+      </div>
+      <div class="flex flex-col items-end gap-1">
+        <span class={`text-xs font-bold px-2 py-1 rounded-full ${tokens.badge}`}>
+          Parte {division.partNumber}
+        </span>
+        <span class="text-xs font-semibold px-2 py-1 rounded-full bg-gray-100 text-gray-500">
+          {division.documentType === "IS" ? "Norma IS" : "Informe TR"}
+        </span>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-gray-900 leading-snug">{division.name}</h3>
+      <p class="text-xs text-gray-400 mt-1">ISO/IEC {division.documentType === "TR" ? "TR " : ""} 29110-{division.partNumber}:{division.year}</p>
+    </div>
+
+    <p class="text-sm text-gray-600 leading-relaxed line-clamp-3 flex-1">
+      {division.description}
+    </p>
+
+    <div class="flex flex-wrap gap-1 mt-auto">
+      {
+        division.keyTopics.slice(0, 3).map((topic) => (
+          <span class={`text-xs px-2 py-0.5 rounded-full font-medium ${tokens.badge}`}>
+            {topic.split("—")[0].trim().split("(")[0].trim()}
+          </span>
+        ))
+      }
+    </div>
+
+    <div
+      class={`text-white text-sm font-semibold px-4 py-2 rounded-lg text-center ${tokens.btn} transition-colors`}
+    >
+      Ver división →
+    </div>
+  </div>
+</a>

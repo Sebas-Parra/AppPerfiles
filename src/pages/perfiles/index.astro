@@ -1,50 +1,106 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import ProfileCard from "../../components/profile/ProfileCard.astro";
-import { allProfiles } from "@/lib/profiles";
+import { getDivisions } from "@/lib/divisions";
+import { getColorTokens } from "@/constants/profile-colors";
+
+const divisions = getDivisions();
 ---
 
-<Layout title="Perfiles ISO 29110 — Guía VSEs">
+<Layout title="Perfiles — ISO/IEC 29110">
   <main class="min-h-screen bg-gray-50">
-    <div class="bg-white border-b border-gray-200 py-8">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
-          <a href="/" class="hover:text-blue-600 transition-colors">Inicio</a>
-          <span>/</span>
-          <span class="text-gray-900 font-medium">Perfiles</span>
-        </div>
-        <h1 class="text-3xl font-extrabold text-gray-900">Perfiles ISO 29110</h1>
-        <p class="text-gray-500 mt-2 max-w-2xl">
-          Los perfiles definen el conjunto mínimo de procesos, actividades y productos de trabajo
-          que una VSE debe implementar según su nivel de madurez organizacional.
+    <!-- Hero -->
+    <div class="bg-gradient-to-br from-slate-700 to-slate-900 text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14 text-center">
+        <span class="inline-block bg-white/10 border border-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full mb-4">
+          ISO/IEC 29110 — Serie Completa
+        </span>
+        <h1 class="text-4xl font-extrabold mb-4">Los 6 Perfiles del Estándar</h1>
+        <p class="text-white/80 max-w-xl mx-auto leading-relaxed">
+          Recorre el estándar de forma secuencial. Cada perfil corresponde a una parte de la norma,
+          desde la visión general hasta las guías de implementación para VSEs.
         </p>
+        <div class="flex justify-center gap-4 mt-4 text-xs">
+          <span class="bg-white/15 px-3 py-1.5 rounded-full">
+            {divisions.filter((d) => d.documentType === "IS").length} Normas Internacionales
+          </span>
+          <span class="bg-white/15 px-3 py-1.5 rounded-full">
+            {divisions.filter((d) => d.documentType === "TR").length} Informes Técnicos
+          </span>
+        </div>
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {allProfiles.map((profile) => <ProfileCard profile={profile} />)}
+    <!-- Course modules -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- Timeline steps -->
+      <div class="space-y-4">
+        {divisions.map((division, idx) => {
+          const tokens = getColorTokens(division.color);
+          const isLast = idx === divisions.length - 1;
+          return (
+            <div class="relative flex gap-5">
+              <!-- Line connector -->
+              <div class="flex flex-col items-center">
+                <div class={`w-12 h-12 rounded-xl ${tokens.bg} flex items-center justify-center text-white font-extrabold text-sm shadow-md flex-shrink-0 z-10`}>
+                  {String(idx + 1).padStart(2, "0")}
+                </div>
+                {!isLast && <div class="w-0.5 flex-1 bg-gray-200 mt-1 mb-1" />}
+              </div>
+
+              <!-- Card -->
+              <a
+                href={`/perfiles/${division.id}`}
+                class={`flex-1 bg-white rounded-2xl border-2 ${tokens.border} ${tokens.borderHover} p-5 mb-4 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 group`}
+              >
+                <div class="flex items-start justify-between gap-4 flex-wrap">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">{division.icon}</span>
+                    <div>
+                      <div class="flex items-center gap-2 mb-1">
+                        <span class={`text-xs font-bold px-2 py-0.5 rounded-full ${tokens.badge}`}>
+                          Parte {division.partNumber}
+                        </span>
+                        <span class="text-xs text-gray-400 font-medium">
+                          {division.documentType === "IS" ? "Norma Internacional" : "Informe Técnico"} · {division.year}
+                        </span>
+                      </div>
+                      <h3 class="font-bold text-gray-900 text-base">{division.name}</h3>
+                    </div>
+                  </div>
+                  <span class={`text-xs font-semibold px-3 py-1.5 rounded-lg ${tokens.btn} text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap`}>
+                    Ver perfil →
+                  </span>
+                </div>
+                <p class="text-sm text-gray-500 mt-3 leading-relaxed line-clamp-2">
+                  {division.description}
+                </p>
+                <div class="flex flex-wrap gap-1.5 mt-3">
+                  {division.keyTopics.slice(0, 3).map((t) => (
+                    <span class={`text-xs px-2 py-0.5 rounded-full ${tokens.badge}`}>
+                      {t.split("—")[0].split("(")[0].trim()}
+                    </span>
+                  ))}
+                  {division.profileId && (
+                    <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-semibold">
+                      Incluye perfil detallado
+                    </span>
+                  )}
+                </div>
+              </a>
+            </div>
+          );
+        })}
       </div>
 
-      <div class="mt-12 bg-blue-50 border border-blue-200 rounded-2xl p-6">
-        <h3 class="font-bold text-blue-900 text-lg mb-2">¿Cuál perfil me corresponde?</h3>
-        <p class="text-blue-800 text-sm mb-4">
-          La selección del perfil adecuado depende del tamaño de tu organización, la complejidad
-          de los proyectos y tu nivel de madurez en procesos de software.
-        </p>
-        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {
-            allProfiles.map((p) => (
-              <div class="bg-white rounded-lg p-3 border border-blue-100">
-                <div class="flex items-center gap-2 mb-1">
-                  <span>{p.icon}</span>
-                  <span class="font-semibold text-sm text-gray-900">{p.name}</span>
-                </div>
-                <p class="text-xs text-gray-500">{p.targetAudience}</p>
-              </div>
-            ))
-          }
-        </div>
+      <!-- Start button -->
+      <div class="text-center mt-4">
+        <a
+          href={`/perfiles/${divisions[0].id}`}
+          class="inline-flex items-center gap-2 bg-slate-800 text-white font-semibold px-8 py-3 rounded-xl hover:bg-slate-900 transition-colors shadow-md"
+        >
+          Comenzar desde el inicio →
+        </a>
       </div>
     </div>
   </main>

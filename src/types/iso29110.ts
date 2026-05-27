@@ -38,7 +38,24 @@ export interface Process {
   workProducts: WorkProduct[];
 }
 
-export type ProfileColor = "green" | "blue" | "purple" | "orange";
+export type ProfileColor = "green" | "blue" | "purple" | "orange" | "slate" | "teal";
+
+export type DivisionColor = ProfileColor;
+
+export interface Division {
+  id: string;
+  partNumber: string;
+  name: string;
+  documentType: "IS" | "TR";
+  year: number;
+  color: DivisionColor;
+  gradient: string;
+  icon: string;
+  targetAudience: string;
+  description: string;
+  keyTopics: string[];
+  profileId?: string;
+}
 
 export interface Profile {
   id: string;
