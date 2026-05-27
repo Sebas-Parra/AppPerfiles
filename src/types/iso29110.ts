@@ -42,6 +42,23 @@ export type ProfileColor = "green" | "blue" | "purple" | "orange" | "slate" | "t
 
 export type DivisionColor = ProfileColor;
 
+export interface ConceptEntry {
+  term: string;
+  definition: string;
+}
+
+export interface ConformanceNote {
+  rule: string;
+  explanation: string;
+}
+
+export interface ProcessSpec {
+  name: string;
+  abbreviation: string;
+  purpose: string;
+  requirements: string[];
+}
+
 export interface Division {
   id: string;
   partNumber: string;
@@ -55,6 +72,12 @@ export interface Division {
   description: string;
   keyTopics: string[];
   profileId?: string;
+  scope?: string;
+  concepts?: ConceptEntry[];
+  documentStructure?: string[];
+  conformanceNotes?: ConformanceNote[];
+  processSpecs?: ProcessSpec[];
+  profileGroups?: { name: string; levels: string[]; description?: string }[];
 }
 
 export interface Profile {

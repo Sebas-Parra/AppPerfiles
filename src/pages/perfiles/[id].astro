@@ -6,6 +6,10 @@ import { getProfile } from "@/lib/profiles";
 import { getColorTokens } from "@/constants/profile-colors";
 import ProcessSection from "../../components/process/ProcessSection";
 import RoleCard from "../../components/profile/RoleCard.astro";
+import ConceptAccordion from "../../components/interactive/ConceptAccordion";
+import ProfileGroupGrid from "../../components/interactive/ProfileGroupGrid";
+import ConformanceChecklist from "../../components/interactive/ConformanceChecklist";
+import ProcessSpecTabs from "../../components/interactive/ProcessSpecTabs";
 
 export function getStaticPaths() {
   return getDivisionIds().map((id) => ({ params: { id } }));
@@ -128,7 +132,82 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
         </div>
       </section>
 
-      <!-- 04 Roles (solo si tiene perfil) -->
+      <!-- 04 Alcance (si existe) -->
+      {division.scope && (
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
+            <h2 class="text-lg font-semibold text-[#111111]">Alcance del Documento</h2>
+          </div>
+          <p class="text-[#626260] leading-relaxed">{division.scope}</p>
+        </section>
+      )}
+
+      <!-- 05 Estructura del documento (si existe) -->
+      {division.documentStructure && (
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
+            <h2 class="text-lg font-semibold text-[#111111]">Estructura del Documento</h2>
+          </div>
+          <ol class="space-y-2">
+            {division.documentStructure.map((section, i) => (
+              <li class="flex items-start gap-3">
+                <span class={`mt-0.5 w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}>
+                  {i + 1}
+                </span>
+                <span class="text-sm text-[#626260] pt-0.5">{section}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
+      <!-- 06 Conceptos clave (si existen) — acordeón interactivo -->
+      {division.concepts && (
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
+            <h2 class="text-lg font-semibold text-[#111111]">Conceptos y Definiciones Clave</h2>
+          </div>
+          <ConceptAccordion concepts={division.concepts} color={division.color} client:visible />
+        </section>
+      )}
+
+      <!-- 07 Grupos de perfiles (solo parte 1) — grid interactivo -->
+      {division.profileGroups && (
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
+            <h2 class="text-lg font-semibold text-[#111111]">Taxonomía de Grupos de Perfiles</h2>
+          </div>
+          <ProfileGroupGrid groups={division.profileGroups} color={division.color} client:visible />
+        </section>
+      )}
+
+      <!-- 08 Notas de conformidad — checklist interactivo -->
+      {division.conformanceNotes && (
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
+            <h2 class="text-lg font-semibold text-[#111111]">Reglas de Conformidad</h2>
+          </div>
+          <ConformanceChecklist notes={division.conformanceNotes} color={division.color} client:visible />
+        </section>
+      )}
+
+      <!-- 09 Especificaciones de proceso — tabs + acordeón interactivo -->
+      {division.processSpecs && (
+        <section>
+          <div class="flex items-center gap-3 mb-4">
+            <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
+            <h2 class="text-lg font-semibold text-[#111111]">Especificaciones de los Procesos</h2>
+          </div>
+          <ProcessSpecTabs specs={division.processSpecs} color={division.color} client:visible />
+        </section>
+      )}
+
+      <!-- Roles (solo si tiene perfil) -->
       {profile && (
         <section>
           <div class="flex items-center gap-3 mb-4">
