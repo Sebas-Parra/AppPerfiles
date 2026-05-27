@@ -155,7 +155,7 @@ export default function ConformanceChecklist({ notes, color }: Props) {
 
               {/* Explanation panel */}
               {isOpen && (
-                <div className="border-t border-[#ebe7e1] px-5 py-4 bg-white">
+                <div className="border-t border-[#ebe7e1] px-5 py-4 bg-white animate-panel-in">
                   <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${tokens.text}`}>
                     Explicación
                   </p>
@@ -181,7 +181,7 @@ export default function ConformanceChecklist({ notes, color }: Props) {
       </div>
 
       {allDone && (
-        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl text-center">
+        <div className="mt-3 p-3 bg-green-50 border border-green-200 rounded-xl text-center animate-soft-pop">
           <p className="text-sm font-semibold text-green-700">
             ¡Todas las reglas revisadas y comprendidas!
           </p>

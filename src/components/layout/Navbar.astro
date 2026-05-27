@@ -2,16 +2,17 @@
 const pathname = Astro.url.pathname;
 ---
 
-<nav class="sticky top-0 z-50 bg-[#f5f1ec] border-b border-[#ebe7e1]">
+<nav class="sticky top-0 z-50 border-b border-[#ebe7e1]/90 bg-[#f5f1ec]/90 backdrop-blur-md" data-motion="hero">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-14">
-      <a href="/" class="flex items-center gap-2.5">
+      <a href="/" class="flex items-center gap-2.5" data-motion-child>
         <span class="font-semibold text-[#111111] text-sm">ISO/IEC 29110</span>
         <span class="hidden sm:inline text-sm text-[#626260]">Guía de Perfiles para VSEs</span>
       </a>
       <div class="flex items-center gap-6">
         <a
           href="/"
+          data-motion-child
           class={`text-sm font-medium transition-colors ${
             pathname === "/"
               ? "text-[#111111]"
@@ -22,6 +23,7 @@ const pathname = Astro.url.pathname;
         </a>
         <a
           href="/perfiles"
+          data-motion-child
           class={`text-sm font-medium transition-colors ${
             pathname.startsWith("/perfiles")
               ? "text-[#111111]"

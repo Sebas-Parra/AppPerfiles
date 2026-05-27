@@ -61,7 +61,7 @@ export default function ConceptAccordion({ concepts, color }: Props) {
             </button>
 
             {isOpen && (
-              <div className={`border-t border-[#ebe7e1] px-4 py-4 ${tokens.bgLight}`}>
+              <div className={`border-t border-[#ebe7e1] px-4 py-4 animate-panel-in ${tokens.bgLight}`}>
                 <p className="text-sm text-[#626260] leading-relaxed">
                   {concept.definition}
                 </p>

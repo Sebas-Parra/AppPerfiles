@@ -66,7 +66,7 @@ export default function ProcessSection({ process, color }: ProcessSectionProps) 
       </div>
 
       {/* Tab content */}
-      <div className="p-5">
+      <div className="p-5 animate-panel-in" key={activeTab}>
         {activeTab === "actividades" && (
           <div className="space-y-3">
             {process.activities.map((activity, idx) => (
