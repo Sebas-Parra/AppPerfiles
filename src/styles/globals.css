@@ -1,1 +1,123 @@
 @import "tailwindcss";
+
+@theme {
+  /* Canvas & Surface */
+  --color-canvas: #f5f1ec;
+  --color-surface-1: #ffffff;
+  --color-surface-2: #ebe7e1;
+  --color-inverse-canvas: #000000;
+  --color-inverse-surface-1: #313130;
+
+  /* Ink (text) */
+  --color-ink: #111111;
+  --color-ink-muted: #626260;
+  --color-ink-subtle: #7b7b78;
+  --color-ink-tertiary: #9c9fa5;
+  --color-ink-inverse: #ffffff;
+
+  /* Borders */
+  --color-hairline: #d3cec6;
+  --color-hairline-soft: #ebe7e1;
+
+  /* Accent */
+  --color-fin-orange: #ff5600;
+
+  /* Semantic */
+  --color-error: #c41c1c;
+  --color-success: #0bdf50;
+
+  /* Profile colors — keep existing color semantics but in warmer tones */
+  --color-profile-slate: #475569;
+  --color-profile-teal: #0d9488;
+  --color-profile-green: #15803d;
+  --color-profile-blue: #1d4ed8;
+  --color-profile-purple: #7c3aed;
+  --color-profile-orange: #ea580c;
+
+  /* Typography — Inter */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Spacing */
+  --spacing-section: 96px;
+
+  /* Border radius */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-xxl: 24px;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+  }
+
+  /* Link underlines on hover */
+  a:hover {
+    transition: color 150ms ease;
+  }
+}
+
+/* Custom utility: Intercom-style floating card */
+@utility card-white {
+  background-color: var(--color-surface-1);
+  border: 1px solid var(--color-hairline);
+}
+
+@utility card-canvas {
+  background-color: var(--color-canvas);
+  border: 1px solid var(--color-hairline);
+}
+
+/* Button base */
+@utility btn-primary {
+  background-color: var(--color-ink);
+  color: white;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+@utility btn-primary-pressed {
+  background-color: var(--color-inverse-canvas);
+}
+
+@utility btn-secondary {
+  background-color: var(--color-surface-1);
+  color: var(--color-ink);
+  font-weight: 500;
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-hairline);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+@utility btn-fin {
+  background-color: var(--color-fin-orange);
+  color: white;
+  font-weight: 500;
+  font-size: 15px;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}

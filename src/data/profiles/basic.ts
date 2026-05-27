@@ -6,7 +6,7 @@ export const basicProfile: Profile = {
   level: 2,
   color: "blue",
   gradient: "from-blue-500 to-cyan-600",
-  icon: "📘",
+  icon: "book",
   targetAudience: "VSEs con hasta 25 personas que desarrollan software de complejidad media",
   description:
     "El Perfil Básico es el más utilizado y referenciado de la ISO 29110. Define dos procesos principales: Gestión de Proyectos (GP) e Implementación de Software (IS). Está orientado a pequeñas empresas que necesitan establecer prácticas básicas de desarrollo y gestión.",

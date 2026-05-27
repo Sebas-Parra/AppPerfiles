@@ -6,7 +6,7 @@ export const intermediateProfile: Profile = {
   level: 3,
   color: "purple",
   gradient: "from-purple-500 to-violet-600",
-  icon: "🔷",
+  icon: "diamond",
   targetAudience:
     "VSEs que gestionan múltiples proyectos y tienen mayor complejidad organizacional",
   description:

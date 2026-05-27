@@ -1,3 +1,5 @@
+import LucideIcon from "@/components/ui/LucideIcon";
+
 interface ProcessRolesProps {
   roles: string[];
   badgeClass: string;
@@ -9,9 +11,10 @@ export default function ProcessRoles({ roles, badgeClass }: ProcessRolesProps) {
       {roles.map((role) => (
         <span
           key={role}
-          className={`px-3 py-2 rounded-lg text-sm font-medium border ${badgeClass} border-current/20`}
+          className={`px-3 py-2 rounded-lg text-sm font-medium border border-[#d3cec6] text-[#111111] ${badgeClass}`}
         >
-          👤 {role}
+          <LucideIcon name="user" className="w-4 h-4" />
+          <span>{role}</span>
         </span>
       ))}
     </div>

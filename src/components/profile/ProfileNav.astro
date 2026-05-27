@@ -17,7 +17,7 @@ const { prev, next } = Astro.props;
           ←
         </div>
         <div>
-          <p class="text-xs text-gray-400">Perfil anterior</p>
+          <p class="text-sm text-gray-400">Perfil anterior</p>
           <p class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
             {prev.icon} {prev.name}
           </p>
@@ -31,7 +31,7 @@ const { prev, next } = Astro.props;
     next ? (
       <a href={`/perfiles/${next.id}`} class="flex items-center gap-3 group text-right">
         <div>
-          <p class="text-xs text-gray-400">Siguiente perfil</p>
+          <p class="text-sm text-gray-400">Siguiente perfil</p>
           <p class="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
             {next.icon} {next.name}
           </p>

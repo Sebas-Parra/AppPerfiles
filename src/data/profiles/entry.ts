@@ -6,7 +6,7 @@ export const entryProfile: Profile = {
   level: 1,
   color: "green",
   gradient: "from-green-500 to-emerald-600",
-  icon: "🌱",
+  icon: "sprout",
   targetAudience: "VSEs de inicio (menos de 3 años) y proyectos pequeños (menos de 6 meses-persona)",
   description:
     "El Perfil de Entrada está diseñado para VSEs en etapa de inicio (menos de 3 años de operación) y/o VSEs que trabajan en proyectos pequeños (menos de 6 meses-persona). Cubre dos procesos: Gestión de Proyecto (PM) e Implementación de Software (SI), en su forma más ligera y práctica.",

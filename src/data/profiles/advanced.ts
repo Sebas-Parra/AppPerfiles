@@ -6,7 +6,7 @@ export const advancedProfile: Profile = {
   level: 4,
   color: "orange",
   gradient: "from-orange-500 to-red-600",
-  icon: "🚀",
+  icon: "rocket",
   targetAudience:
     "VSEs con mayor madurez organizacional que requieren procesos altamente optimizados",
   description:
