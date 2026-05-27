@@ -21,11 +21,20 @@ const {
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   </head>
-  <body class="min-h-screen flex flex-col bg-gray-50 antialiased">
+  <body class="min-h-screen flex flex-col bg-[#f5f1ec] antialiased">
     <Navbar />
     <div class="flex-1">
       <slot />
     </div>
+    <footer class="border-t border-[#ebe7e1] py-16 mt-24">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-sm text-[#7b7b78]">ISO/IEC 29110 — Perfiles de ciclo de vida para Pequeñas Organizaciones</p>
+        <p class="text-sm text-[#9c9fa5] mt-2">Guía de referencia interactiva</p>
+      </div>
+    </footer>
   </body>
 </html>

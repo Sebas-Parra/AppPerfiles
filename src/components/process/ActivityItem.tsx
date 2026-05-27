@@ -20,24 +20,24 @@ export default function ActivityItem({
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="border border-gray-200 rounded-xl overflow-hidden">
+    <div className="border border-[#d3cec6] rounded-xl overflow-hidden">
       <button
         onClick={() => setOpen((prev) => !prev)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors"
+        className="w-full flex items-center justify-between p-4 text-left hover:bg-[#f5f1ec] transition-colors"
       >
         <div className="flex items-center gap-3">
           <NumberedBullet number={index + 1} bgClass={bgClass} />
           <div>
-            <p className="font-semibold text-gray-900 text-sm">{activity.name}</p>
-            <p className="text-xs text-gray-500">{activity.tasks.length} tareas</p>
+            <p className="font-semibold text-[#111111] text-sm">{activity.name}</p>
+            <p className="text-sm text-[#626260]">{activity.tasks.length} tareas</p>
           </div>
         </div>
         <ChevronIcon open={open} />
       </button>
 
       {open && (
-        <div className="border-t border-gray-100 p-4 bg-gray-50">
-          <p className="text-sm text-gray-600 mb-4">{activity.description}</p>
+        <div className="border-t border-[#ebe7e1] p-4 bg-[#f5f1ec]">
+          <p className="text-sm text-[#626260] mb-4">{activity.description}</p>
           <div className="space-y-3">
             {activity.tasks.map((task, tIdx) => (
               <TaskItem

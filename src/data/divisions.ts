@@ -9,7 +9,7 @@ export const divisions: Division[] = [
     year: 2016,
     color: "slate",
     gradient: "from-slate-500 to-slate-700",
-    icon: "📋",
+    icon: "clipboard-list",
     targetAudience:
       "VSEs y sus clientes, evaluadores, productores de normas, proveedores de herramientas y metodologías.",
     description:
@@ -33,7 +33,7 @@ export const divisions: Division[] = [
     year: 2015,
     color: "blue",
     gradient: "from-blue-500 to-blue-700",
-    icon: "🗂️",
+    icon: "folder-tree",
     targetAudience:
       "Productores de perfiles, proveedores de herramientas y metodologías. No está destinada directamente a las VSEs.",
     description:
@@ -57,7 +57,7 @@ export const divisions: Division[] = [
     year: 2018,
     color: "purple",
     gradient: "from-purple-500 to-purple-700",
-    icon: "🏆",
+    icon: "trophy",
     targetAudience:
       "VSEs y sus clientes, evaluadores, organismos de certificación y acreditación.",
     description:
@@ -81,7 +81,7 @@ export const divisions: Division[] = [
     year: 2018,
     color: "orange",
     gradient: "from-orange-500 to-orange-700",
-    icon: "📐",
+    icon: "ruler",
     targetAudience:
       "VSEs, clientes, productores de normas, proveedores de herramientas y metodología.",
     description:
@@ -105,7 +105,7 @@ export const divisions: Division[] = [
     year: 2025,
     color: "green",
     gradient: "from-green-500 to-green-700",
-    icon: "🌱",
+    icon: "sprout",
     targetAudience: "VSEs y sus clientes.",
     description:
       "Guía de implementación para el Perfil de Entrada del Grupo de Perfiles Genéricos. Dirigida a VSEs con hasta 3 años de funcionamiento inicial y proyectos con duración inferior a 6 meses-persona. Define dos procesos: Gestión de Proyectos (PM) e Implementación de Software (SI).",
@@ -129,7 +129,7 @@ export const divisions: Division[] = [
     year: 2025,
     color: "teal",
     gradient: "from-teal-500 to-teal-700",
-    icon: "📗",
+    icon: "book-open",
     targetAudience: "VSEs y sus clientes.",
     description:
       "Guía de implementación para el Perfil Básico del Grupo de Perfiles Genéricos. Describe el desarrollo de software de una sola aplicación por un solo equipo de trabajo sin factores situacionales especiales. Define los procesos PM y SI con mayor profundidad que el Perfil de Entrada.",

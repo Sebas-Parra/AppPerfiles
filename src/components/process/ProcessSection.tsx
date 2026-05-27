@@ -26,9 +26,9 @@ export default function ProcessSection({ process, color }: ProcessSectionProps) 
   const tokens = getColorTokens(color);
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <div className="bg-white rounded-xl border border-[#d3cec6]">
       {/* Header */}
-      <div className={`${tokens.bg} text-white p-5`}>
+      <div className={`${tokens.bg} text-white p-5 rounded-t-xl`}>
         <div className="flex items-center gap-3">
           <span className="bg-white/20 text-white text-sm font-bold px-3 py-1 rounded-lg">
             {process.abbreviation}
@@ -39,7 +39,7 @@ export default function ProcessSection({ process, color }: ProcessSectionProps) 
       </div>
 
       {/* Tab bar */}
-      <div className="flex border-b border-gray-200 overflow-x-auto">
+      <div className="flex border-b border-[#d3cec6] overflow-x-auto">
         {TABS.map((tab) => {
           const count = (process[tab.countKey] as unknown[]).length;
           return (
@@ -49,13 +49,13 @@ export default function ProcessSection({ process, color }: ProcessSectionProps) 
               className={`px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors border-b-2 flex items-center gap-1.5 ${
                 activeTab === tab.key
                   ? tokens.tab
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  : "border-transparent text-[#7b7b78] hover:text-[#111111]"
               }`}
             >
               {tab.label}
               <span
                 className={`text-xs px-1.5 py-0.5 rounded-full font-semibold ${
-                  activeTab === tab.key ? tokens.badge : "bg-gray-100 text-gray-500"
+                  activeTab === tab.key ? tokens.badge : "bg-[#ebe7e1] text-[#626260]"
                 }`}
               >
                 {count}

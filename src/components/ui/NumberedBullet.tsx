@@ -9,7 +9,7 @@ export default function NumberedBullet({
   bgClass,
   size = "md",
 }: NumberedBulletProps) {
-  const sizeClass = size === "sm" ? "w-6 h-6 text-xs" : "w-7 h-7 text-xs";
+  const sizeClass = size === "sm" ? "w-6 h-6 text-sm" : "w-7 h-7 text-sm";
   return (
     <span
       className={`${sizeClass} ${bgClass} rounded-full flex-shrink-0 flex items-center justify-center text-white font-bold`}
