@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import type { Activity } from "@/types/iso29110";
 import TaskItem from "./TaskItem";

@@ -1,0 +1,44 @@
+---
+const pathname = Astro.url.pathname;
+---
+
+<nav class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="/" class="flex items-center gap-3">
+        <div
+          class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center text-white font-bold text-sm shadow"
+        >
+          ISO
+        </div>
+        <div>
+          <p class="font-bold text-gray-900 text-sm leading-tight">ISO/IEC 29110</p>
+          <p class="text-xs text-gray-500 leading-tight">Guía de Perfiles para VSEs</p>
+        </div>
+      </a>
+
+      <div class="flex items-center gap-1">
+        <a
+          href="/"
+          class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            pathname === "/"
+              ? "bg-blue-50 text-blue-700"
+              : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          }`}
+        >
+          Inicio
+        </a>
+        <a
+          href="/perfiles"
+          class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+            pathname.startsWith("/perfiles")
+              ? "bg-blue-50 text-blue-700"
+              : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+          }`}
+        >
+          Perfiles
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>

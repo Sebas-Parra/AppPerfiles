@@ -7,18 +7,185 @@ export const entryProfile: Profile = {
   color: "green",
   gradient: "from-green-500 to-emerald-600",
   icon: "🌱",
-  targetAudience: "VSEs que realizan un único proyecto con un único proceso de desarrollo",
+  targetAudience: "VSEs de inicio (menos de 3 años) y proyectos pequeños (menos de 6 meses-persona)",
   description:
-    "El Perfil de Entrada está diseñado para organizaciones muy pequeñas que están comenzando a implementar prácticas de ingeniería de software. Cubre un único proceso básico de implementación de software sin gestión de proyectos formal.",
+    "El Perfil de Entrada está diseñado para VSEs en etapa de inicio (menos de 3 años de operación) y/o VSEs que trabajan en proyectos pequeños (menos de 6 meses-persona). Cubre dos procesos: Gestión de Proyecto (PM) e Implementación de Software (SI), en su forma más ligera y práctica.",
   characteristics: [
-    "Organización de una sola persona o equipo muy pequeño",
-    "Proceso único y simple de desarrollo",
-    "Sin gestión formal de proyectos",
-    "Orientado a iniciarse en buenas prácticas",
+    "VSE de inicio con menos de 3 años de operación",
+    "Proyectos de menos de 6 meses-persona",
+    "Dos procesos: Gestión de Proyecto (PM) e Implementación de Software (SI)",
+    "Gestión de proyecto simplificada",
     "Documentación mínima requerida",
-    "Ideal para proyectos muy pequeños y de corta duración",
+    "No aplica a software de seguridad crítica",
   ],
   processes: [
+    {
+      id: "pm-entry",
+      name: "Gestión de Proyecto",
+      abbreviation: "PM",
+      purpose:
+        "Coordinar y llevar a cabo las actividades del proyecto de software de manera sistemática para cumplir con el alcance del proyecto y los requisitos del cliente, en tiempo y costo.",
+      outcomes: [
+        "Los requisitos del proyecto y los productos de trabajo esperados son definidos y acordados con el cliente",
+        "Los recursos (personas, herramientas, infraestructura) son estimados y asignados",
+        "El progreso del proyecto es monitoreado y se toman acciones correctivas cuando sea necesario",
+        "El repositorio del proyecto es mantenido con los productos de trabajo del proyecto",
+        "El proyecto completado es aceptado por el cliente",
+      ],
+      activities: [
+        {
+          id: "pm-entry-a1",
+          name: "Planificación del Proyecto",
+          description:
+            "Definir el alcance, estimar el esfuerzo y duración, asignar roles y documentar el Plan de Proyecto.",
+          tasks: [
+            {
+              id: "pm-entry-t1",
+              name: "Revisar la Declaración de Trabajo",
+              description:
+                "Revisar y acordar con el cliente la Declaración de Trabajo para comprender el alcance, los entregables y las restricciones del proyecto.",
+              inputs: ["Declaración de Trabajo"],
+              outputs: ["Declaración de Trabajo revisada y aceptada"],
+            },
+            {
+              id: "pm-entry-t2",
+              name: "Definir tareas y estimar esfuerzo",
+              description:
+                "Identificar las tareas necesarias para completar el proyecto y estimar el esfuerzo, la duración y los recursos requeridos.",
+              inputs: ["Declaración de Trabajo revisada"],
+              outputs: ["Lista de tareas con estimaciones"],
+            },
+            {
+              id: "pm-entry-t3",
+              name: "Asignar roles al equipo",
+              description:
+                "Identificar los roles del proyecto (PM, DEV, CUS) y asignar las personas correspondientes.",
+              inputs: ["Lista de tareas con estimaciones"],
+              outputs: ["Composición del equipo del proyecto"],
+            },
+            {
+              id: "pm-entry-t4",
+              name: "Documentar el Plan de Proyecto",
+              description:
+                "Elaborar el Plan de Proyecto integrando el alcance, las tareas, el cronograma, los recursos y los entregables.",
+              inputs: ["Lista de tareas con estimaciones", "Composición del equipo"],
+              outputs: ["Plan de Proyecto"],
+            },
+            {
+              id: "pm-entry-t5",
+              name: "Obtener aceptación del Plan de Proyecto",
+              description:
+                "Presentar el Plan de Proyecto al cliente y obtener su aceptación formal.",
+              inputs: ["Plan de Proyecto"],
+              outputs: ["Plan de Proyecto aceptado por el cliente"],
+            },
+          ],
+        },
+        {
+          id: "pm-entry-a2",
+          name: "Ejecución y Control del Proyecto",
+          description:
+            "Ejecutar las tareas del proyecto conforme al plan, monitorear el avance y tomar acciones correctivas cuando se detecten desviaciones.",
+          tasks: [
+            {
+              id: "pm-entry-t6",
+              name: "Ejecutar tareas del proyecto",
+              description:
+                "Realizar las actividades planificadas siguiendo el Plan de Proyecto y registrar el avance.",
+              inputs: ["Plan de Proyecto aceptado"],
+              outputs: ["Registros de avance del proyecto"],
+            },
+            {
+              id: "pm-entry-t7",
+              name: "Realizar reuniones de seguimiento",
+              description:
+                "Efectuar reuniones periódicas con el equipo y/o el cliente para revisar el avance, identificar problemas y acordar acciones.",
+              inputs: ["Registros de avance del proyecto"],
+              outputs: ["Actas de reunión"],
+            },
+            {
+              id: "pm-entry-t8",
+              name: "Monitorear avance y corregir desviaciones",
+              description:
+                "Comparar el avance real con el planificado y tomar acciones correctivas cuando se detecten desviaciones en tiempo, costo o calidad.",
+              inputs: ["Plan de Proyecto", "Registros de avance"],
+              outputs: ["Plan de Proyecto actualizado (si aplica)"],
+            },
+            {
+              id: "pm-entry-t9",
+              name: "Gestionar solicitudes de cambio",
+              description:
+                "Si el cliente solicita cambios al alcance, evaluar el impacto y actualizar el Plan de Proyecto previo acuerdo. (Tarea condicional: aplica cuando el cliente solicita cambios.)",
+              inputs: ["Solicitud de cambio del cliente"],
+              outputs: ["Solicitud de cambio aceptada/rechazada", "Plan de Proyecto actualizado"],
+            },
+          ],
+        },
+        {
+          id: "pm-entry-a3",
+          name: "Cierre del Proyecto",
+          description:
+            "Verificar que todos los entregables estén completos, obtener la aceptación del cliente y archivar los productos de trabajo.",
+          tasks: [
+            {
+              id: "pm-entry-t10",
+              name: "Verificar entregables del proyecto",
+              description:
+                "Confirmar que todos los entregables definidos en el Plan de Proyecto han sido completados y aceptados por el cliente.",
+              inputs: ["Plan de Proyecto", "Productos de trabajo del proyecto"],
+              outputs: ["Lista de verificación de entregables"],
+            },
+            {
+              id: "pm-entry-t11",
+              name: "Obtener aceptación del cliente",
+              description:
+                "Obtener la aceptación formal del cliente sobre el software entregado y el cierre del proyecto.",
+              inputs: ["Software entregado", "Lista de verificación de entregables"],
+              outputs: ["Registro de Aceptación del cliente"],
+            },
+            {
+              id: "pm-entry-t12",
+              name: "Archivar productos de trabajo en el repositorio",
+              description:
+                "Guardar todos los productos de trabajo del proyecto en el repositorio del proyecto para futura referencia.",
+              inputs: ["Todos los productos de trabajo del proyecto"],
+              outputs: ["Repositorio del proyecto archivado"],
+            },
+          ],
+        },
+      ],
+      roles: ["Gerente de Proyecto", "Desarrollador", "Cliente"],
+      workProducts: [
+        {
+          id: "wp-pm-entry-1",
+          name: "Plan de Proyecto",
+          description:
+            "Documento que describe el alcance, las tareas, el cronograma, los recursos asignados y los entregables del proyecto.",
+        },
+        {
+          id: "wp-pm-entry-2",
+          name: "Registros de Avance",
+          description: "Registros del progreso real del proyecto versus lo planificado.",
+        },
+        {
+          id: "wp-pm-entry-3",
+          name: "Actas de Reunión",
+          description:
+            "Documentación de los acuerdos y decisiones tomadas en las reuniones de seguimiento. (Condicional: si se realizan reuniones.)",
+        },
+        {
+          id: "wp-pm-entry-4",
+          name: "Solicitudes de Cambio",
+          description:
+            "Registro de los cambios solicitados al alcance del proyecto y su resolución. (Condicional: si el cliente solicita cambios.)",
+        },
+        {
+          id: "wp-pm-entry-5",
+          name: "Registro de Aceptación",
+          description: "Acta de aceptación formal del proyecto completado por parte del cliente.",
+        },
+      ],
+    },
     {
       id: "si-entry",
       name: "Implementación de Software",
@@ -177,33 +344,49 @@ export const entryProfile: Profile = {
   roles: [
     {
       id: "r-entry-1",
-      name: "Propietario/Desarrollador",
-      abbreviation: "PD",
+      name: "Gerente de Proyecto",
+      abbreviation: "PM",
       description:
-        "Persona responsable tanto de la gestión del proyecto como del desarrollo del software. Puede ser el dueño de la VSE.",
+        "Responsable de planificar, ejecutar y controlar el proyecto. En VSEs muy pequeñas puede ser la misma persona que el desarrollador.",
       responsibilities: [
-        "Realizar el análisis de requisitos",
-        "Diseñar y construir el software",
-        "Ejecutar pruebas",
-        "Entregar el producto al cliente",
-        "Mantener comunicación con el cliente",
+        "Revisar y acordar la Declaración de Trabajo con el cliente",
+        "Elaborar y mantener el Plan de Proyecto",
+        "Monitorear el avance y tomar acciones correctivas",
+        "Coordinar reuniones de seguimiento",
+        "Obtener la aceptación del cliente al cierre",
       ],
     },
     {
       id: "r-entry-2",
-      name: "Cliente",
-      abbreviation: "CL",
+      name: "Desarrollador",
+      abbreviation: "DEV",
       description:
-        "Persona u organización que requiere el software y proporciona los requisitos.",
+        "Realiza las actividades técnicas de análisis de requisitos, diseño, construcción, pruebas y entrega del software.",
       responsibilities: [
-        "Proporcionar requisitos del software",
-        "Aprobar especificaciones",
-        "Aceptar el producto final",
-        "Proporcionar retroalimentación durante el desarrollo",
+        "Obtener y documentar los requisitos del software",
+        "Diseñar y construir los componentes de software",
+        "Desarrollar y ejecutar casos de prueba",
+        "Integrar los componentes y verificar el software",
+        "Entregar el software al cliente",
+      ],
+    },
+    {
+      id: "r-entry-3",
+      name: "Cliente",
+      abbreviation: "CUS",
+      description:
+        "Persona u organización que requiere el software. Proporciona requisitos, aprueba entregables y acepta formalmente el producto.",
+      responsibilities: [
+        "Proporcionar la Declaración de Trabajo y requisitos",
+        "Aprobar el Plan de Proyecto",
+        "Revisar y aprobar la Especificación de Requisitos",
+        "Aceptar formalmente el software entregado",
+        "Solicitar cambios al alcance cuando sea necesario",
       ],
     },
   ],
   deploymentPackages: [
+    "Gestión de Proyecto - Entrada (PM-EN)",
     "Requerimientos de Software (RS)",
     "Implementación de Software (IS)",
   ],

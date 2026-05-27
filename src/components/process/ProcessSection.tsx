@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import type { Process } from "@/types/iso29110";
 import type { ProfileColor } from "@/types/iso29110";
