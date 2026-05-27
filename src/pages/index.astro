@@ -74,9 +74,6 @@ const divisions = getDivisions();
                 <div class="flex items-center gap-2 mb-0.5 flex-wrap">
                   <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${tokens.badge}`}>Parte {division.partNumber}</span>
                   <span class="text-xs text-[#7b7b78]">{division.documentType === "IS" ? "Norma Internacional" : "Informe Técnico"} · {division.year}</span>
-                  {division.profileId && (
-                    <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">Con procesos detallados</span>
-                  )}
                 </div>
                 <p class="font-medium text-[#111111] text-sm truncate">{division.name}</p>
               </div>
