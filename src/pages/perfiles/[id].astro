@@ -16,6 +16,9 @@ import ProfileGroupGrid from "../../components/interactive/ProfileGroupGrid";
 import ConformanceChecklist from "../../components/interactive/ConformanceChecklist";
 import ProcessSpecTabs from "../../components/interactive/ProcessSpecTabs";
 import ReadingSidebar from "../../components/interactive/ReadingSidebar";
+import PdfViewerModal from "../../components/interactive/PdfViewerModal";
+import PdfOpenButton from "../../components/pdf/PdfOpenButton.astro";
+import { getPdfDocument } from "@/lib/pdf-documents";
 
 export function getStaticPaths() {
   return getDivisionIds().map((id) => ({ params: { id } }));
@@ -30,6 +33,7 @@ const { prev, next } = getAdjacentDivisions(id!);
 const allDivisions = getDivisions();
 const currentIndex = allDivisions.findIndex((d) => d.id === id);
 const profile = division.profileId ? getProfile(division.profileId) : null;
+const pdfDocument = getPdfDocument(id!);
 
 interface ReadingSection {
   id: string;
@@ -83,6 +87,18 @@ const processesSection = profile
 const packagesSection = profile
   ? registerSection("paquetes-despliegue", "Paquetes de Despliegue")
   : null;
+
+interface PdfTarget {
+  page?: number;
+  search?: string;
+}
+
+function cleanDocumentStructureTitle(entry: string) {
+  return entry
+    .replace(/^Sección\s+\d+\s+—\s+/, "")
+    .replace(/^Anexo\s+[A-Z]\s+—\s+/, "")
+    .trim();
+}
 ---
 
 <Layout
@@ -111,6 +127,15 @@ const packagesSection = profile
           >
         </div>
         <div class="flex items-center gap-2 flex-shrink-0">
+          <PdfOpenButton
+            label={`Documento fuente — ${division.name}`}
+            pdfUrl={pdfDocument?.url}
+            pdfTitle={pdfDocument?.title}
+            page={1}
+            search={division.name}
+            icon="lucide:file-text"
+            class="hidden sm:inline-flex bg-white"
+          />
           <span class="text-sm text-[#7b7b78]"
             >{currentIndex + 1} / {allDivisions.length}</span
           >
@@ -197,12 +222,14 @@ const packagesSection = profile
           class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
           data-motion="reveal"
         >
-          <div class="flex items-center gap-3 mb-4">
-            <span
-              class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-              >{descriptionSection.number}</span
-            >
-            <h2 class="text-lg font-semibold text-[#111111]">Descripción</h2>
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span
+                class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                >{descriptionSection.number}</span
+              >
+              <h2 class="text-lg font-semibold text-[#111111]">Descripción</h2>
+            </div>
           </div>
           <p class="text-[#626260] leading-relaxed">{division.description}</p>
         </section>
@@ -213,14 +240,16 @@ const packagesSection = profile
           class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
           data-motion="reveal"
         >
-          <div class="flex items-center gap-3 mb-4">
-            <span
-              class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-              >{audienceSection.number}</span
-            >
-            <h2 class="text-lg font-semibold text-[#111111]">
-              Público Objetivo
-            </h2>
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span
+                class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                >{audienceSection.number}</span
+              >
+              <h2 class="text-lg font-semibold text-[#111111]">
+                Público Objetivo
+              </h2>
+            </div>
           </div>
           <div class="flex items-start gap-3">
             <Icon
@@ -250,12 +279,14 @@ const packagesSection = profile
           class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
           data-motion="reveal"
         >
-          <div class="flex items-center gap-3 mb-4">
-            <span
-              class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-              >{topicsSection.number}</span
-            >
-            <h2 class="text-lg font-semibold text-[#111111]">Temas Clave</h2>
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <span
+                class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                >{topicsSection.number}</span
+              >
+              <h2 class="text-lg font-semibold text-[#111111]">Temas Clave</h2>
+            </div>
           </div>
           <div class="grid sm:grid-cols-2 gap-3" data-motion="stagger">
             {
@@ -281,15 +312,17 @@ const packagesSection = profile
               class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {scopeSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Alcance del Documento
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {scopeSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Alcance del Documento
+                  </h2>
+                </div>
               </div>
               <p class="text-[#626260] leading-relaxed">{division.scope}</p>
             </section>
@@ -304,25 +337,43 @@ const packagesSection = profile
               class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {structureSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Estructura del Documento
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {structureSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Estructura del Documento
+                  </h2>
+                </div>
               </div>
               <ol class="space-y-2">
                 {division.documentStructure.map((section, i) => (
-                  <li class="flex items-start gap-3">
-                    <span
-                      class={`mt-0.5 w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}
+                  <li>
+                    <button
+                      type="button"
+                      data-pdf-open="true"
+                      data-pdf-url={pdfDocument?.url}
+                      data-pdf-title={pdfDocument?.title}
+                      data-pdf-label={section}
+                      data-pdf-search={cleanDocumentStructureTitle(section)}
+                      class="flex w-full items-start gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-[#f8f5f0]"
                     >
-                      {i + 1}
-                    </span>
-                    <span class="text-sm text-[#626260] pt-0.5">{section}</span>
+                      <span
+                        class={`mt-0.5 w-6 h-6 rounded-md flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}
+                      >
+                        {i + 1}
+                      </span>
+                      <span class="flex-1 text-sm text-[#626260] pt-0.5">
+                        {section}
+                      </span>
+                      <Icon
+                        name="lucide:external-link"
+                        class="mt-1 h-4 w-4 flex-shrink-0 text-[#9c9fa5]"
+                      />
+                    </button>
                   </li>
                 ))}
               </ol>
@@ -338,15 +389,17 @@ const packagesSection = profile
               class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {conceptsSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Conceptos y Definiciones Clave
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {conceptsSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Conceptos y Definiciones Clave
+                  </h2>
+                </div>
               </div>
               <ConceptAccordion
                 concepts={division.concepts}
@@ -365,15 +418,17 @@ const packagesSection = profile
               class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {groupsSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Taxonomía de Grupos de Perfiles
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {groupsSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Taxonomía de Grupos de Perfiles
+                  </h2>
+                </div>
               </div>
               <ProfileGroupGrid
                 groups={division.profileGroups}
@@ -392,15 +447,17 @@ const packagesSection = profile
               class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {conformanceSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Reglas de Conformidad
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {conformanceSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Reglas de Conformidad
+                  </h2>
+                </div>
               </div>
               <ConformanceChecklist
                 notes={division.conformanceNotes}
@@ -419,15 +476,17 @@ const packagesSection = profile
               class="scroll-mt-32"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {processSpecsSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Especificaciones de los Procesos
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {processSpecsSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Especificaciones de los Procesos
+                  </h2>
+                </div>
               </div>
               <ProcessSpecTabs
                 specs={division.processSpecs}
@@ -446,15 +505,17 @@ const packagesSection = profile
               class="scroll-mt-32"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {rolesSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Roles del Perfil
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {rolesSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Roles del Perfil
+                  </h2>
+                </div>
               </div>
               <div class="grid gap-4 sm:grid-cols-2" data-motion="stagger">
                 {profile.roles.map((role) => (
@@ -473,21 +534,25 @@ const packagesSection = profile
               class="scroll-mt-32"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {processesSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Procesos del Perfil
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {processesSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Procesos del Perfil
+                  </h2>
+                </div>
               </div>
               <div class="space-y-4">
                 {profile.processes.map((process) => (
                   <ProcessSection
                     process={process}
                     color={profile.color}
+                    pdfUrl={pdfDocument?.url}
+                    pdfTitle={pdfDocument?.title}
                     client:visible
                   />
                 ))}
@@ -504,15 +569,17 @@ const packagesSection = profile
               class="scroll-mt-32 bg-white border border-[#d3cec6] rounded-xl p-6"
               data-motion="reveal"
             >
-              <div class="flex items-center gap-3 mb-4">
-                <span
-                  class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
-                >
-                  {packagesSection?.number}
-                </span>
-                <h2 class="text-lg font-semibold text-[#111111]">
-                  Paquetes de Despliegue
-                </h2>
+              <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}
+                  >
+                    {packagesSection?.number}
+                  </span>
+                  <h2 class="text-lg font-semibold text-[#111111]">
+                    Paquetes de Despliegue
+                  </h2>
+                </div>
               </div>
               <p class="text-sm text-[#626260] mb-4">
                 Guías detalladas que apoyan la implementación del perfil en la
@@ -604,5 +671,6 @@ const packagesSection = profile
         </div>
       </div>
     </div>
+    <PdfViewerModal client:load />
   </main>
 </Layout>
