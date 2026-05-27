@@ -33,7 +33,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
   <main>
 
     <!-- Progress bar -->
-    <div class="bg-[#f5f1ec] border-b border-[#ebe7e1] sticky top-14 z-40">
+    <div class="bg-[#f5f1ec] border-b border-[#ebe7e1] sticky top-14 z-40" data-motion="reveal">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
         <div class="flex items-center gap-3 min-w-0">
           <a href="/perfiles" class="text-sm text-[#7b7b78] hover:text-[#111111] transition-colors whitespace-nowrap flex items-center gap-1.5">
@@ -49,6 +49,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
             <div
               class={`h-full rounded-full ${tokens.bg}`}
               style={`width: ${((currentIndex + 1) / allDivisions.length) * 100}%`}
+              data-motion="progress"
             />
           </div>
         </div>
@@ -57,12 +58,12 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
     <!-- Hero -->
     <div class="bg-[#f5f1ec] border-b border-[#ebe7e1]">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10" data-motion="hero">
         <div class="flex items-start gap-5">
-          <div class={`w-16 h-16 rounded-2xl ${tokens.bg} flex items-center justify-center flex-shrink-0`}>
+          <div class={`w-16 h-16 rounded-2xl ${tokens.bg} flex items-center justify-center flex-shrink-0`} data-motion-child>
             <Icon name={`lucide:${division.icon}`} class="w-8 h-8 text-white" />
           </div>
-          <div>
+          <div data-motion-child>
             <div class="flex items-center gap-2 mb-2 flex-wrap">
               <span class="text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full">
                 Módulo {currentIndex + 1} de {allDivisions.length}
@@ -87,7 +88,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
 
       <!-- 01 Descripción -->
-      <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+      <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
         <div class="flex items-center gap-3 mb-4">
           <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
           <h2 class="text-lg font-semibold text-[#111111]">Descripción</h2>
@@ -96,7 +97,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
       </section>
 
       <!-- 02 Público Objetivo -->
-      <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+      <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
         <div class="flex items-center gap-3 mb-4">
           <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
           <h2 class="text-lg font-semibold text-[#111111]">Público Objetivo</h2>
@@ -115,14 +116,14 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
       </section>
 
       <!-- 03 Temas Clave -->
-      <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+      <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
         <div class="flex items-center gap-3 mb-4">
           <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
           <h2 class="text-lg font-semibold text-[#111111]">Temas Clave</h2>
         </div>
-        <div class="grid sm:grid-cols-2 gap-3">
+        <div class="grid sm:grid-cols-2 gap-3" data-motion="stagger">
           {division.keyTopics.map((topic) => (
-            <div class="flex items-start gap-3">
+            <div class="flex items-start gap-3" data-motion-item>
               <span class={`mt-0.5 w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold ${tokens.bg}`}>
                 <Icon name="lucide:check" class="w-3 h-3" />
               </span>
@@ -134,7 +135,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 04 Alcance (si existe) -->
       {division.scope && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Alcance del Documento</h2>
@@ -145,7 +146,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 05 Estructura del documento (si existe) -->
       {division.documentStructure && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Estructura del Documento</h2>
@@ -165,7 +166,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 06 Conceptos clave (si existen) — acordeón interactivo -->
       {division.concepts && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Conceptos y Definiciones Clave</h2>
@@ -176,7 +177,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 07 Grupos de perfiles (solo parte 1) — grid interactivo -->
       {division.profileGroups && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Taxonomía de Grupos de Perfiles</h2>
@@ -187,7 +188,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 08 Notas de conformidad — checklist interactivo -->
       {division.conformanceNotes && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Reglas de Conformidad</h2>
@@ -198,7 +199,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 09 Especificaciones de proceso — tabs + acordeón interactivo -->
       {division.processSpecs && (
-        <section>
+        <section data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Especificaciones de los Procesos</h2>
@@ -209,12 +210,12 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- Roles (solo si tiene perfil) -->
       {profile && (
-        <section>
+        <section data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Roles del Perfil</h2>
           </div>
-          <div class="grid gap-4 sm:grid-cols-2">
+          <div class="grid gap-4 sm:grid-cols-2" data-motion="stagger">
             {profile.roles.map((role) => <RoleCard role={role} tokens={tokens} />)}
           </div>
         </section>
@@ -222,7 +223,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 05 Procesos (solo si tiene perfil) -->
       {profile && (
-        <section>
+        <section data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Procesos del Perfil</h2>
@@ -237,7 +238,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
 
       <!-- 06 Paquetes de despliegue (solo si tiene perfil) -->
       {profile && (
-        <section class="bg-white border border-[#d3cec6] rounded-xl p-6">
+        <section class="bg-white border border-[#d3cec6] rounded-xl p-6" data-motion="reveal">
           <div class="flex items-center gap-3 mb-4">
             <span class={`text-xs font-medium px-2.5 py-1 rounded-lg ${tokens.badge}`}>{nextSection()}</span>
             <h2 class="text-lg font-semibold text-[#111111]">Paquetes de Despliegue</h2>
@@ -257,9 +258,9 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
       )}
 
       <!-- Navegación -->
-      <div class="flex justify-between items-center pt-6 border-t border-[#ebe7e1] gap-4">
+      <div class="flex justify-between items-center pt-6 border-t border-[#ebe7e1] gap-4" data-motion="reveal">
         {prev ? (
-          <a href={`/perfiles/${prev.id}`} class="flex items-center gap-3 group min-w-0">
+          <a href={`/perfiles/${prev.id}`} class="flex items-center gap-3 group min-w-0" data-hover="lift">
             <div class="w-10 h-10 rounded-xl bg-[#ebe7e1] group-hover:bg-[#d3cec6] flex items-center justify-center transition-colors flex-shrink-0">
               <Icon name="lucide:arrow-left" class="w-5 h-5 text-[#626260]" />
             </div>
@@ -273,7 +274,7 @@ function nextSection() { sectionNum++; return String(sectionNum).padStart(2, "0"
         ) : <div />}
 
         {next ? (
-          <a href={`/perfiles/${next.id}`} class="flex items-center gap-3 group text-right min-w-0">
+          <a href={`/perfiles/${next.id}`} class="flex items-center gap-3 group text-right min-w-0" data-hover="lift">
             <div class="min-w-0">
               <p class="text-sm text-[#7b7b78]">Siguiente</p>
               <p class="text-sm font-medium text-[#111111] group-hover:text-[#626260] transition-colors truncate">

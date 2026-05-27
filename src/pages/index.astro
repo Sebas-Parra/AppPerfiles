@@ -10,37 +10,39 @@ const divisions = getDivisions();
 <Layout>
   <main>
     <!-- Hero -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-      <span class="inline-block text-xs font-medium text-[#626260] border border-[#d3cec6] px-4 py-1.5 rounded-full mb-6">
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center" data-motion="hero">
+      <span class="inline-block text-xs font-medium text-[#626260] border border-[#d3cec6] px-4 py-1.5 rounded-full mb-6" data-motion-child>
         Norma Internacional ISO/IEC 29110
       </span>
-      <h1 class="text-4xl sm:text-5xl font-semibold text-[#111111] leading-tight mb-4 tracking-tight" style="letter-spacing: -0.5px;">
+      <h1 class="text-4xl sm:text-5xl font-semibold text-[#111111] leading-tight mb-4 tracking-tight" style="letter-spacing: -0.5px;" data-motion-child>
         Guía de Perfiles para<br />
         Pequeñas Organizaciones
       </h1>
-      <p class="text-lg text-[#626260] max-w-xl mx-auto leading-relaxed mb-8">
+      <p class="text-lg text-[#626260] max-w-xl mx-auto leading-relaxed mb-8" data-motion-child>
         La ISO/IEC 29110 define cómo las VSEs (hasta 25 personas) pueden implementar buenas
         prácticas de ingeniería de software. Organizada en <strong class="text-[#111111] font-medium">6 perfiles</strong>, desde la visión general hasta las guías de implementación.
       </p>
       <a
         href="/perfiles"
         class="inline-block bg-[#111111] text-white font-medium text-[15px] px-8 py-2.5 rounded-lg hover:bg-black transition-colors"
+        data-motion-child
+        data-hover="lift"
       >
         Explorar los 6 perfiles
       </a>
     </section>
 
     <!-- Stats -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-24" data-motion="reveal">
       <div class="bg-white border border-[#d3cec6] rounded-2xl p-8">
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center" data-motion="stagger">
           {[
             { label: "Perfiles del estándar", value: "6", icon: "book-open" },
             { label: "Normas Internacionales", value: "5", icon: "scroll-text" },
             { label: "Procesos documentados", value: "9+", icon: "settings" },
             { label: "Actividades cubiertas", value: "30+", icon: "clipboard-list" },
           ].map((stat) => (
-            <div class="flex flex-col items-center gap-2">
+            <div class="flex flex-col items-center gap-2" data-motion-item>
               <Icon name={`lucide:${stat.icon}`} class="w-6 h-6 text-[#626260]" />
               <span class="text-3xl font-semibold text-[#111111] tracking-tight">{stat.value}</span>
               <span class="text-sm text-[#7b7b78]">{stat.label}</span>
@@ -52,19 +54,21 @@ const divisions = getDivisions();
 
     <!-- Profiles preview -->
     <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-      <div class="text-center mb-10">
+      <div class="text-center mb-10" data-motion="reveal">
         <h2 class="text-3xl font-semibold text-[#111111] mb-2 tracking-tight">Los 6 Perfiles</h2>
         <p class="text-[#626260] max-w-lg mx-auto text-base">
           Recorre el estándar en orden. Cada perfil cubre una parte específica de la norma.
         </p>
       </div>
-      <div class="space-y-2.5">
+      <div class="space-y-2.5" data-motion="stagger">
         {divisions.map((division, idx) => {
           const tokens = getColorTokens(division.color);
           return (
             <a
               href={`/perfiles/${division.id}`}
               class={`flex items-center gap-4 bg-white border border-[#d3cec6] hover:border-[#b0a99e] rounded-xl px-5 py-4 transition-all group`}
+              data-motion-item
+              data-hover="lift"
             >
               <div class={`w-10 h-10 rounded-lg ${tokens.bg} flex items-center justify-center text-white font-semibold text-sm flex-shrink-0`}>
                 {String(idx + 1).padStart(2, "0")}
@@ -82,10 +86,11 @@ const divisions = getDivisions();
           );
         })}
       </div>
-      <div class="text-center mt-8">
+      <div class="text-center mt-8" data-motion="reveal">
         <a
           href={`/perfiles/${divisions[0].id}`}
           class="inline-block bg-[#111111] text-white font-medium text-[15px] px-7 py-2.5 rounded-lg hover:bg-black transition-colors"
+          data-hover="lift"
         >
           Comenzar desde el Perfil 1
         </a>
@@ -93,7 +98,7 @@ const divisions = getDivisions();
     </section>
 
     <!-- About -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 mb-24" data-motion="reveal">
       <div class="grid md:grid-cols-2 gap-8 items-start">
         <div>
           <span class="text-sm font-medium text-[#626260]">¿Qué es?</span>
@@ -107,14 +112,14 @@ const divisions = getDivisions();
             Compatible con cualquier ciclo de vida: cascada, iterativo, incremental o ágil.
           </p>
         </div>
-        <div class="grid grid-cols-2 gap-3">
+        <div class="grid grid-cols-2 gap-3" data-motion="stagger">
           {[
             { icon: "target", title: "Para VSEs", desc: "Hasta 25 personas" },
             { icon: "book-open", title: "6 Partes", desc: "Visión a implementación" },
             { icon: "globe", title: "Internacional", desc: "ISO e IEC" },
             { icon: "check-circle", title: "Práctica", desc: "Guías de implementación" },
           ].map((item) => (
-            <div class="bg-white border border-[#d3cec6] rounded-xl p-4">
+            <div class="bg-white border border-[#d3cec6] rounded-xl p-4" data-motion-item>
               <Icon name={`lucide:${item.icon}`} class="w-6 h-6 text-[#626260] mb-2" />
               <p class="font-medium text-[#111111] text-sm">{item.title}</p>
               <p class="text-sm text-[#7b7b78] mt-0.5">{item.desc}</p>

@@ -29,6 +29,7 @@ export default function ProfileGroupGrid({ groups, color }: Props) {
             <button
               key={i}
               onClick={() => setActiveGroup(isActive ? null : i)}
+              data-hover="lift"
               className={`text-left p-4 rounded-xl border transition-all ${
                 isActive
                   ? `${tokens.bgLight} ${tokens.border}`
@@ -70,7 +71,7 @@ export default function ProfileGroupGrid({ groups, color }: Props) {
 
       {activeGroup !== null && groups[activeGroup].description && (
         <div
-          className={`mt-3 rounded-xl p-4 border ${tokens.bgLight} ${tokens.border}`}
+          className={`mt-3 rounded-xl p-4 border animate-panel-in ${tokens.bgLight} ${tokens.border}`}
         >
           <p className={`text-xs font-semibold uppercase tracking-wide mb-2 ${tokens.text}`}>
             {groups[activeGroup].name}

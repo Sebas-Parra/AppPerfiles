@@ -56,7 +56,10 @@ export default function ProcessSpecTabs({ specs, color }: Props) {
       </div>
 
       {/* Panel */}
-      <div className="bg-white border border-[#d3cec6] rounded-xl overflow-hidden">
+      <div
+        key={active.abbreviation}
+        className="bg-white border border-[#d3cec6] rounded-xl overflow-hidden animate-panel-in"
+      >
         {/* Purpose header */}
         <div className={`${tokens.bg} text-white p-5`}>
           <div className="flex items-center gap-3 mb-2">
@@ -135,7 +138,7 @@ export default function ProcessSpecTabs({ specs, color }: Props) {
                   </button>
 
                   {isOpen && (
-                    <div className={`border-t border-[#ebe7e1] px-4 py-3 ${tokens.bgLight}`}>
+                    <div className={`border-t border-[#ebe7e1] px-4 py-3 animate-panel-in ${tokens.bgLight}`}>
                       <p className="text-xs text-[#7b7b78] leading-relaxed">
                         Este requisito es obligatorio para declarar conformidad con el Perfil Básico
                         del proceso <strong>{active.abbreviation}</strong>. Debe evidenciarse mediante
