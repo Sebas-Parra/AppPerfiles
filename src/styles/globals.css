@@ -26,7 +26,7 @@
   --color-error: #c41c1c;
   --color-success: #0bdf50;
 
-  /* Profile colors — keep existing color semantics but in warmer tones */
+  /* Profile colors */
   --color-profile-slate: #475569;
   --color-profile-teal: #0d9488;
   --color-profile-green: #15803d;
@@ -34,7 +34,7 @@
   --color-profile-purple: #7c3aed;
   --color-profile-orange: #ea580c;
 
-  /* Typography — Inter */
+  /* Typography */
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
@@ -50,6 +50,10 @@
   --radius-xxl: 24px;
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Base
+   ═══════════════════════════════════════════════════════════ */
+
 @layer base {
   html {
     font-family: var(--font-sans);
@@ -57,7 +61,19 @@
     color: var(--color-ink);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    scroll-behavior: smooth;
+    /* Lenis handles smooth scrolling — remove CSS fallback */
+    scroll-behavior: auto;
+  }
+
+  /* Lenis sets its own height — prevent body overflow */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  /* Lenis utility: stop pointer events while inertial scrolling */
+  html.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
   }
 
   body {
@@ -68,7 +84,19 @@
       linear-gradient(180deg, rgba(255, 255, 255, 0.32), rgba(255, 255, 255, 0));
   }
 
-  /* Link underlines on hover */
+  /* SplitType overrides — prevent FOUT during text animation */
+  .split-char,
+  .split-word,
+  .split-line {
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  .split-char {
+    /* SplitType chars need relative positioning for rotateX */
+    position: relative;
+  }
+
   a:hover {
     transition: color 150ms ease;
   }
@@ -79,7 +107,62 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Cinematic Utilities
+   ═══════════════════════════════════════════════════════════ */
+
 @layer utilities {
+  /* Reveal containers used by GSAP */
+  .reveal-container {
+    overflow: hidden;
+    display: block;
+  }
+
+  /* Clip-path reveal — animated by GSAP to inset(0 0 0% 0) */
+  .clip-reveal {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  /* Depth layers for parallax stacking */
+  .depth-layer {
+    position: relative;
+    z-index: 1;
+  }
+
+  .depth-layer-2 {
+    position: relative;
+    z-index: 2;
+  }
+
+  .depth-layer-3 {
+    position: relative;
+    z-index: 3;
+  }
+
+  /* Grain overlay — subtle film grain for cinematic texture */
+  .grain-overlay {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 200px 200px;
+  }
+
+  /* Section transition — gradient fade between sections */
+  .section-fade-top {
+    mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 15%);
+  }
+
+  .section-fade-bottom {
+    mask-image: linear-gradient(to top, transparent 0%, black 15%);
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 15%);
+  }
+
+  /* Existing animations */
   .animate-panel-in {
     animation: panel-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
@@ -89,12 +172,15 @@
   }
 }
 
+/* ═══════════════════════════════════════════════════════════
+   Keyframes
+   ═══════════════════════════════════════════════════════════ */
+
 @keyframes panel-in {
   from {
     opacity: 0;
     transform: translateY(12px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -106,12 +192,25 @@
     opacity: 0;
     transform: scale(0.96);
   }
-
   100% {
     opacity: 1;
     transform: scale(1);
   }
 }
+
+@keyframes float-subtle {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Accessibility
+   ═══════════════════════════════════════════════════════════ */
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -125,9 +224,16 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+
+  .grain-overlay {
+    display: none;
+  }
 }
 
-/* Custom utility: Intercom-style floating card */
+/* ═══════════════════════════════════════════════════════════
+   Design System Utilities
+   ═══════════════════════════════════════════════════════════ */
+
 @utility card-white {
   background-color: var(--color-surface-1);
   border: 1px solid var(--color-hairline);
@@ -138,7 +244,6 @@
   border: 1px solid var(--color-hairline);
 }
 
-/* Button base */
 @utility btn-primary {
   background-color: var(--color-ink);
   color: white;

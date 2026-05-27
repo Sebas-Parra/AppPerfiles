@@ -9,75 +9,111 @@ const divisions = getDivisions();
 
 <Layout title="Perfiles — ISO/IEC 29110">
   <main>
-    <!-- Hero -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center" data-motion="hero">
-      <span class="inline-block text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full mb-4" data-motion-child>
+    <!-- ═══ Hero ═══ -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
+      <span
+        class="inline-block text-xs font-medium text-[#626260] border border-[#d3cec6] px-3 py-1 rounded-full mb-5"
+        data-motion-child
+      >
         ISO/IEC 29110 — Serie Completa
       </span>
-      <h1 class="text-4xl font-semibold text-[#111111] mb-4 tracking-tight" data-motion-child>Los 6 Perfiles del Estándar</h1>
-      <p class="text-[#626260] max-w-xl mx-auto leading-relaxed" data-motion-child>
-        Recorre el estándar de forma secuencial. Cada perfil corresponde a una parte de la norma,
-        desde la visión general hasta las guías de implementación para VSEs.
+      <h1
+        class="text-4xl md:text-5xl font-semibold text-[#111111] mb-5 tracking-tight"
+        data-cinematic="list-hero-text"
+      >
+        Los 6 Perfiles del Estándar
+      </h1>
+      <p
+        class="text-[#626260] max-w-xl mx-auto leading-relaxed text-base md:text-lg"
+        data-motion-child
+      >
+        Recorre el estándar de forma secuencial. Cada perfil corresponde a una
+        parte de la norma, desde la visión general hasta las guías de
+        implementación para VSEs.
       </p>
-      <div class="flex justify-center gap-3 mt-6 text-sm" data-motion-child>
-        <span class="border border-[#d3cec6] px-3 py-1.5 rounded-full text-[#626260] animate-soft-pop">
-          {divisions.filter((d) => d.documentType === "IS").length} Normas Internacionales
+      <div class="flex justify-center gap-3 mt-7 text-sm" data-motion-child>
+        <span
+          class="border border-[#d3cec6] px-4 py-2 rounded-full text-[#626260]"
+          data-cinematic="float-badge"
+        >
+          {divisions.filter((d) => d.documentType === "IS").length} Normas
+          Internacionales
         </span>
-        <span class="border border-[#d3cec6] px-3 py-1.5 rounded-full text-[#626260] animate-soft-pop">
-          {divisions.filter((d) => d.documentType === "TR").length} Informes Técnicos
+        <span
+          class="border border-[#d3cec6] px-4 py-2 rounded-full text-[#626260]"
+          data-cinematic="float-badge"
+        >
+          {divisions.filter((d) => d.documentType === "TR").length} Informes
+          Técnicos
         </span>
       </div>
     </section>
 
-    <!-- Timeline -->
-    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-      <div class="space-y-4" data-motion="stagger">
+    <!-- ═══ Timeline ═══ -->
+    <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+      <div class="space-y-5" data-cinematic="timeline">
         {divisions.map((division, idx) => {
           const tokens = getColorTokens(division.color);
           const isLast = idx === divisions.length - 1;
           return (
             <div class="relative flex gap-5" data-motion-item>
               <div class="flex flex-col items-center">
-                <div class={`w-11 h-11 rounded-lg ${tokens.bg} flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 z-10`}>
+                <div
+                  class={`w-12 h-12 rounded-xl ${tokens.bg} flex items-center justify-center text-white font-semibold text-sm flex-shrink-0 z-10`}
+                >
                   {String(idx + 1).padStart(2, "0")}
                 </div>
-                {!isLast && <div class="w-px flex-1 bg-[#d3cec6] mt-1 mb-1" />}
+                {!isLast && <div class="w-px flex-1 bg-[#d3cec6] mt-2 mb-2" />}
               </div>
               <a
                 href={`/perfiles/${division.id}`}
-                class={`flex-1 bg-white border border-[#d3cec6] hover:border-[#b0a99e] rounded-xl p-5 mb-4 transition-all group`}
+                class={`flex-1 bg-white border border-[#d3cec6] hover:border-[#b0a99e] rounded-xl p-6 mb-5 transition-all group`}
                 data-hover="lift"
               >
                 <div class="flex items-start justify-between gap-4 flex-wrap">
-                  <div class="flex items-center gap-3">
-                    <Icon name={`lucide:${division.icon}`} class="w-6 h-6 text-[#626260]" />
+                  <div class="flex items-center gap-4">
+                    <Icon
+                      name={`lucide:${division.icon}`}
+                      class="w-7 h-7 text-[#626260]"
+                    />
                     <div>
-                      <div class="flex items-center gap-2 mb-1">
-                        <span class={`text-xs font-medium px-2 py-0.5 rounded-full ${tokens.badge}`}>
+                      <div class="flex items-center gap-2 mb-1.5">
+                        <span
+                          class={`text-xs font-medium px-2.5 py-0.5 rounded-full ${tokens.badge}`}
+                        >
                           Parte {division.partNumber}
                         </span>
                         <span class="text-xs text-[#7b7b78]">
-                          {division.documentType === "IS" ? "Norma Internacional" : "Informe Técnico"} · {division.year}
+                          {division.documentType === "IS"
+                            ? "Norma Internacional"
+                            : "Informe Técnico"}{" "}
+                          · {division.year}
                         </span>
                       </div>
-                      <h3 class="font-medium text-[#111111] text-base">{division.name}</h3>
+                      <h3 class="font-medium text-[#111111] text-base">
+                        {division.name}
+                      </h3>
                     </div>
                   </div>
-                  <span class={`text-xs font-medium px-3 py-1.5 rounded-lg ${tokens.btn} text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap`}>
+                  <span
+                    class={`text-xs font-medium px-4 py-2 rounded-lg ${tokens.btn} text-white opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap`}
+                  >
                     Ver perfil
                   </span>
                 </div>
-                <p class="text-sm text-[#626260] mt-3 leading-relaxed line-clamp-2">
+                <p class="text-sm text-[#626260] mt-4 leading-relaxed line-clamp-2">
                   {division.description}
                 </p>
-                <div class="flex flex-wrap gap-1.5 mt-3">
+                <div class="flex flex-wrap gap-1.5 mt-4">
                   {division.keyTopics.slice(0, 3).map((t) => (
-                    <span class={`text-xs px-2 py-0.5 rounded-full ${tokens.badge}`}>
+                    <span
+                      class={`text-xs px-2.5 py-0.5 rounded-full ${tokens.badge}`}
+                    >
                       {t.split("—")[0].split("(")[0].trim()}
                     </span>
                   ))}
                   {division.profileId && (
-                    <span class="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
+                    <span class="text-xs px-2.5 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
                       Incluye perfil detallado
                     </span>
                   )}
@@ -87,10 +123,10 @@ const divisions = getDivisions();
           );
         })}
       </div>
-      <div class="text-center mt-6" data-motion="reveal">
+      <div class="text-center mt-8">
         <a
           href={`/perfiles/${divisions[0].id}`}
-          class="inline-block bg-[#111111] text-white font-medium text-[15px] px-8 py-2.5 rounded-lg hover:bg-black transition-colors"
+          class="inline-block bg-[#111111] text-white font-medium text-[15px] px-8 py-3 rounded-lg hover:bg-black transition-colors"
           data-hover="lift"
         >
           Comenzar desde el inicio

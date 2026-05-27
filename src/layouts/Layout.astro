@@ -2,6 +2,7 @@
 import "../styles/globals.css";
 import Navbar from "../components/layout/Navbar.astro";
 import PageAnimator from "../components/interactive/PageAnimator";
+import PageTransitionManager from "../components/interactive/PageTransitionManager";
 
 interface Props {
   title?: string;
@@ -12,6 +13,17 @@ const {
   title = "ISO 29110 — Guía de Perfiles para VSEs",
   description = "Guía interactiva de los perfiles ISO/IEC 29110 para Entidades Muy Pequeñas (VSEs)",
 } = Astro.props;
+
+// Derive page identifier for cinematic animation routing
+const pathname = Astro.url.pathname;
+const pageId =
+  pathname === "/"
+    ? "home"
+    : pathname === "/perfiles"
+      ? "perfiles-index"
+      : pathname.startsWith("/perfiles/")
+        ? "perfil-detail"
+        : "generic";
 ---
 
 <!doctype html>
@@ -25,16 +37,39 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Prevent flash during page transitions: hide content until entrance animation plays -->
+    <script is:inline>
+      (function() {
+        if (sessionStorage.getItem('pageTransition')) {
+          document.documentElement.classList.add('transitioning');
+        }
+      })();
+    </script>
+    <style is:inline>
+      html.transitioning .page-content {
+        opacity: 0;
+      }
+    </style>
   </head>
-  <body class="min-h-screen flex flex-col bg-[#f5f1ec] antialiased">
+  <body
+    class="min-h-screen flex flex-col bg-[#f5f1ec] antialiased"
+    data-page={pageId}
+  >
+    <!-- Subtle grain overlay for cinematic texture -->
+    <div class="grain-overlay" aria-hidden="true"></div>
+
     <PageAnimator client:load />
+    <PageTransitionManager client:load />
     <Navbar />
-    <div class="flex-1">
+    <div class="flex-1 page-content">
       <slot />
     </div>
     <footer class="border-t border-[#ebe7e1] py-16 mt-24">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <p class="text-sm text-[#7b7b78]">ISO/IEC 29110 — Perfiles de ciclo de vida para Pequeñas Organizaciones</p>
+        <p class="text-sm text-[#7b7b78]">
+          ISO/IEC 29110 — Perfiles de ciclo de vida para Pequeñas Organizaciones
+        </p>
         <p class="text-sm text-[#9c9fa5] mt-2">Guía de referencia interactiva</p>
       </div>
     </footer>
