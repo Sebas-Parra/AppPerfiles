@@ -1,8 +1,9 @@
 import Lenis from "@studio-freight/lenis";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import type { LenisConfig } from "./types";
 
 let instance: Lenis | null = null;
-let rafId: number | null = null;
 
 const DEFAULT: LenisConfig = {
   duration: 1.2,
@@ -20,11 +21,15 @@ export function initLenis(config: Partial<LenisConfig> = {}): Lenis {
 
   instance = new Lenis({ ...DEFAULT, ...config });
 
-  function raf(time: number): void {
-    instance?.raf(time);
-    rafId = requestAnimationFrame(raf);
-  }
-  rafId = requestAnimationFrame(raf);
+  // Critical: sync ScrollTrigger with Lenis smooth scroll
+  // Without this, ScrollTrigger doesn't know where the user really is
+  instance.on("scroll", ScrollTrigger.update);
+
+  // Use GSAP's ticker for the RAF loop — keeps everything in sync
+  gsap.ticker.add((time) => {
+    instance?.raf(time * 1000);
+  });
+  gsap.ticker.lagSmoothing(0);
 
   return instance;
 }
@@ -36,14 +41,14 @@ export function getLenis(): Lenis | null {
 
 /* ─── Destroy ──────────────────────────────────────────── */
 export function destroyLenis(): void {
-  if (rafId !== null) {
-    cancelAnimationFrame(rafId);
-    rafId = null;
-  }
   if (instance) {
     instance.destroy();
     instance = null;
   }
+  // Clean up GSAP ticker
+  gsap.ticker.remove(() => {
+    instance?.raf(0);
+  });
 }
 
 /* ─── Programmatic Scroll ──────────────────────────────── */

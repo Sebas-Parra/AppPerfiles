@@ -118,8 +118,8 @@ export function zoomSection(
   return createScrollScene({
     scrollTrigger: {
       trigger,
-      start: opts?.start ?? "top bottom",
-      end: opts?.end ?? "bottom top",
+      start: opts?.start ?? "top 85%",
+      end: opts?.end ?? "top 25%",
       scrub: 1.2,
     },
     timeline: (tl) => {
@@ -168,12 +168,12 @@ export function scaleInScene(
   if (prefersReducedMotion()) return gsap.timeline();
 
   return createScrollScene({
-    scrollTrigger: { trigger, start: "top bottom", end: "bottom top", scrub: 1 },
+    scrollTrigger: { trigger, start: "top 88%", once: true },
     timeline: (tl) => {
       tl.fromTo(
         trigger,
-        { scale: opts?.scaleFrom ?? 0.92, autoAlpha: 0.85 },
-        { scale: 1, autoAlpha: 1, ease: "none" },
+        { scale: opts?.scaleFrom ?? 0.97, autoAlpha: 0.7 },
+        { scale: 1, autoAlpha: 1, duration: 0.55, ease: EASINGS.cinematic },
       );
     },
   });
