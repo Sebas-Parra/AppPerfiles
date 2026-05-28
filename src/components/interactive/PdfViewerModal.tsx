@@ -1,52 +1,52 @@
-import { useEffect, useEffectEvent, useMemo, useState } from "react";
+import { useEffect, useEffectEvent, useMemo, useState } from 'react'
 
 interface PdfViewerState {
-  label: string;
-  page?: number;
-  search?: string;
-  title: string;
-  url: string;
+  label: string
+  page?: number
+  search?: string
+  title: string
+  url: string
 }
 
 function buildPdfUrl(viewer: PdfViewerState) {
-  const params = new URLSearchParams();
+  const params = new URLSearchParams()
 
   if (viewer.page) {
-    params.set("page", String(viewer.page));
+    params.set('page', String(viewer.page))
   }
 
   if (viewer.search) {
-    params.set("search", viewer.search);
+    params.set('search', viewer.search)
   }
 
-  const fragment = params.toString();
-  return fragment ? `${viewer.url}#${fragment}` : viewer.url;
+  const fragment = params.toString()
+  return fragment ? `${viewer.url}#${fragment}` : viewer.url
 }
 
 export default function PdfViewerModal() {
-  const [viewer, setViewer] = useState<PdfViewerState | null>(null);
+  const [viewer, setViewer] = useState<PdfViewerState | null>(null)
 
   const closeModal = useEffectEvent(() => {
-    setViewer(null);
-  });
+    setViewer(null)
+  })
 
   useEffect(() => {
     const onDocumentClick = (event: MouseEvent) => {
-      const target = event.target;
-      if (!(target instanceof HTMLElement)) return;
+      const target = event.target
+      if (!(target instanceof HTMLElement)) return
 
-      const trigger = target.closest<HTMLElement>("[data-pdf-open]");
-      if (!trigger) return;
+      const trigger = target.closest<HTMLElement>('[data-pdf-open]')
+      if (!trigger) return
 
-      const url = trigger.dataset.pdfUrl;
-      const title = trigger.dataset.pdfTitle;
+      const url = trigger.dataset.pdfUrl
+      const title = trigger.dataset.pdfTitle
 
-      if (!url || !title) return;
+      if (!url || !title) return
 
-      event.preventDefault();
+      event.preventDefault()
 
-      const pageValue = trigger.dataset.pdfPage;
-      const page = pageValue ? Number(pageValue) : undefined;
+      const pageValue = trigger.dataset.pdfPage
+      const page = pageValue ? Number(pageValue) : undefined
 
       setViewer({
         url,
@@ -54,38 +54,38 @@ export default function PdfViewerModal() {
         page: Number.isFinite(page) ? page : undefined,
         search: trigger.dataset.pdfSearch || undefined,
         label: trigger.dataset.pdfLabel || title,
-      });
-    };
+      })
+    }
 
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        closeModal();
+      if (event.key === 'Escape') {
+        closeModal()
       }
-    };
+    }
 
-    document.addEventListener("click", onDocumentClick);
-    window.addEventListener("keydown", onKeyDown);
+    document.addEventListener('click', onDocumentClick)
+    window.addEventListener('keydown', onKeyDown)
 
     return () => {
-      document.removeEventListener("click", onDocumentClick);
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [closeModal]);
+      document.removeEventListener('click', onDocumentClick)
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [closeModal])
 
   useEffect(() => {
-    if (!viewer) return;
+    if (!viewer) return
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [viewer]);
+      document.body.style.overflow = previousOverflow
+    }
+  }, [viewer])
 
-  const viewerUrl = useMemo(() => (viewer ? buildPdfUrl(viewer) : ""), [viewer]);
+  const viewerUrl = useMemo(() => (viewer ? buildPdfUrl(viewer) : ''), [viewer])
 
-  if (!viewer) return null;
+  if (!viewer) return null
 
   return (
     <div className="fixed inset-0 z-[120] flex items-center justify-center bg-[#111111]/70 px-3 py-6 backdrop-blur-sm sm:px-6">
@@ -102,13 +102,10 @@ export default function PdfViewerModal() {
             <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#9c9fa5]">
               Documento fuente
             </p>
-            <h3 className="mt-1 text-lg font-semibold text-[#111111]">{viewer.label}</h3>
+            <h3 className="mt-1 text-lg font-semibold text-[#111111]">
+              {viewer.label}
+            </h3>
             <p className="mt-1 text-sm text-[#626260]">{viewer.title}</p>
-            {viewer.search && (
-              <p className="mt-1 text-xs text-[#7b7b78]">
-                Búsqueda sugerida: <span className="font-medium text-[#111111]">{viewer.search}</span>
-              </p>
-            )}
           </div>
 
           <div className="flex items-center gap-2">
@@ -140,5 +137,5 @@ export default function PdfViewerModal() {
         </div>
       </div>
     </div>
-  );
+  )
 }

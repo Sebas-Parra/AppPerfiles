@@ -109,7 +109,7 @@ export function cameraZoomScene(
     container,
     {
       scale: opts?.scaleFrom ?? 0.92,
-      autoAlpha: 0.5,
+      autoAlpha: 0.85,
     },
     {
       scale: opts?.scaleTo ?? 1.08,

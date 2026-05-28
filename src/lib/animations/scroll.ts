@@ -125,7 +125,7 @@ export function zoomSection(
     timeline: (tl) => {
       tl.fromTo(
         trigger,
-        { scale: opts?.scaleFrom ?? 0.85, autoAlpha: 0.5 },
+        { scale: opts?.scaleFrom ?? 0.85, autoAlpha: 0.85 },
         { scale: opts?.scaleTo ?? 1, autoAlpha: 1, ease: "none" },
       );
     },
@@ -172,7 +172,7 @@ export function scaleInScene(
     timeline: (tl) => {
       tl.fromTo(
         trigger,
-        { scale: opts?.scaleFrom ?? 0.92, autoAlpha: 0.4 },
+        { scale: opts?.scaleFrom ?? 0.92, autoAlpha: 0.85 },
         { scale: 1, autoAlpha: 1, ease: "none" },
       );
     },
